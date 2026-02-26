@@ -1,0 +1,11 @@
+.selectDoctorSpecialization {
+  @apply md:hidden;
+}
+
+.selectDoctorSpecialization > p {
+  @apply text-center mb-2 font-semibold;
+}
+
+.selectDoctorSpecialization .selectTrigger {
+  @apply w-full max-w-48 border border-gray-700;
+}

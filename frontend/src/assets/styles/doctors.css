@@ -1,0 +1,27 @@
+.doctors {
+  @apply min-h-screen;
+}
+
+.doctors .sectionContainer {
+  @apply mt-16;
+}
+
+.allDoctors {
+  @apply flex flex-col md:flex-row gap-10 items-center md:items-start;
+}
+
+.allDoctors .topPart {
+  @apply flex gap-4 flex-col min-[476px]:flex-row md:flex-col justify-center items-center;
+}
+
+.allDoctorsList {
+  @apply space-y-24 w-full;
+}
+
+.allDoctorsContainer {
+  @apply w-full flex flex-wrap gap-8 justify-center items-center;
+}
+
+.healupPagination {
+  @apply w-max block mx-auto;
+}

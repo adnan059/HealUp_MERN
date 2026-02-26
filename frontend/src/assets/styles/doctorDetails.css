@@ -1,0 +1,34 @@
+.doctorDetails .sectionContainer {
+  @apply flex flex-col gap-20 my-16;
+}
+
+.doctorDetails .doctorInfo {
+  @apply gap-8 flex flex-col md:flex-row justify-center items-center;
+}
+
+.doctorDetails .doctorInfo > div {
+  @apply max-w-110 w-full;
+}
+.doctorDetails .doctorInfo .doctorImage img {
+  @apply w-full;
+}
+
+.doctorDetails .doctorInfo .doctorTextData {
+  @apply space-y-3 text-base;
+}
+
+.doctorDetails .doctorInfo .doctorTextData > h2 {
+  @apply text-4xl capitalize font-semibold mb-5;
+}
+
+.doctorDetails .doctorInfo .doctorTextData > p {
+  @apply flex items-center gap-1 capitalize;
+}
+
+.doctorDetails .doctorInfo .doctorTextData > .degree {
+  @apply uppercase;
+}
+
+.doctorDetails .doctorInfo .doctorTextData > .about {
+  @apply my-5;
+}

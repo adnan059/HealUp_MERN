@@ -1,0 +1,7 @@
+.featuredDoctorList {
+  @apply flex justify-center items-center flex-wrap gap-5;
+}
+
+.viewMoreDoctorsButton {
+  @apply block mx-auto mt-20 bg-indigo-800 w-3xs;
+}

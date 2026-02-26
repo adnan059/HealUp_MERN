@@ -1,0 +1,15 @@
+.createDoctorProfile .sectionContainer {
+  @apply mt-24 mb-20;
+}
+
+.createDoctorProfile .sectionContainer > h2 {
+  @apply text-2xl font-semibold mb-16 text-center;
+}
+
+.createDoctorForm {
+  @apply max-w-150 w-full mx-auto space-y-7;
+}
+
+.createDoctorForm > div {
+  @apply space-y-3;
+}

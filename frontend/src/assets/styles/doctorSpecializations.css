@@ -1,0 +1,7 @@
+.doctorSpecialiazationsList {
+  @apply flex-col divide-y divide-indigo-500 hidden md:flex;
+}
+
+.doctorSpecialiazationItem {
+  @apply cursor-pointer capitalize py-2 hover:bg-indigo-100 hover:px-2 transition-all duration-200 hover:font-semibold;
+}

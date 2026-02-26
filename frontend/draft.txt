@@ -1,0 +1,19 @@
+client side pages or routes
+-----------XXX-------------
+/ 
+/register
+/login 
+/doctors 
+/doctors/:id 
+/payment/* 
+/not-found 
+
+Private routes 
+--------------
+/dashboard/patient/:id 
+/dashboard/doctor/:id 
+/dashboard/admin/:id
+
+doctor card items
+-----------------
+name, speciality, experience, degree

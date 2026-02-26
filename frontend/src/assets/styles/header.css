@@ -1,0 +1,33 @@
+header {
+  @apply py-5 fixed top-0 right-0 left-0 px-6 min-[1290px]:px-0 z-40 bg-linear-to-r from-indigo-900 to-indigo-500;
+}
+
+.headerContainer {
+  @apply max-w-7xl w-full mx-auto flex justify-between items-center;
+}
+
+.logo h1 {
+  @apply flex justify-center items-center text-3xl text-white font-bold;
+}
+.logo h1 span {
+  @apply text-emerald-500;
+}
+
+nav {
+  @apply hidden md:block;
+}
+.navList {
+  @apply flex text-indigo-100 justify-center items-center gap-3 text-lg;
+}
+
+.headerMenuDropdown {
+  @apply md:hidden;
+}
+
+.headerMenuDropdownLinkItem {
+  @apply text-indigo-900 flex items-center justify-start gap-2 hover:bg-indigo-50 w-full py-1 px-1 cursor-pointer rounded-sm;
+}
+
+.headerMenuDropdownLinkItemIcon {
+  @apply text-indigo-900;
+}
