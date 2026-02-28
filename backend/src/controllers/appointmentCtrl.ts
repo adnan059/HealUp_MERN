@@ -9,6 +9,7 @@ import {
   formatDhakaDate,
   getDhakaDateNow,
   getDhakaToday,
+  getPaymentExpiryTime,
   isToday,
   nowInMinutes,
 } from "../lib/utils";
@@ -79,7 +80,7 @@ export const getAvailableSlots = async (
       doctorId,
       date,
       status: {
-        $ne: "cancelled",
+        $in: ["pending", "confirmed"],
       },
     })
       .select("startMinute")
@@ -125,8 +126,15 @@ export const createAppointment = async (
   next: NextFunction,
 ) => {
   try {
-    const { doctorId, patientId, date, startMinute, endMinute, symptoms } =
-      req.body;
+    const {
+      doctorId,
+      patientId,
+      date,
+      startMinute,
+      endMinute,
+      symptoms,
+      paymentAmount,
+    } = req.body;
 
     // console.log("patient Id ==>", patientId.toString());
     // console.log("req.user._id ==>", req.user?._id.toString());
@@ -178,6 +186,8 @@ export const createAppointment = async (
       return next(createError(400, "Doctor is not available on this day"));
     }
 
+    const paymentExpiresAt = getPaymentExpiryTime();
+
     const appointment = await Appointment.create({
       doctorId,
       patientId,
@@ -185,6 +195,8 @@ export const createAppointment = async (
       startMinute,
       endMinute,
       symptoms,
+      paymentAmount,
+      paymentExpiresAt,
     });
 
     res.status(201).json(appointment);

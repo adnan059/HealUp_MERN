@@ -14,12 +14,14 @@ import {
   useGetAvailableSlots,
   useGetNextWorkingDays,
 } from "@/hooks/useAppointments";
+import { api } from "@/lib/crud-utils";
 import { formatDate, formatTime, handleAxiosError } from "@/lib/utils";
 import { useAuth } from "@/provider/auth-context";
 import type {
   ICreateAppointmentData,
   IDoctorDetailsWithSchedule,
 } from "@/types";
+
 import { useState } from "react";
 
 type SlotType = { startMinute: number; endMinute: number };
@@ -63,14 +65,22 @@ const BookAppointment = ({
       startMinute: selectedSlot.startMinute,
       endMinute: selectedSlot.endMinute,
       symptoms,
+      paymentAmount: doctorDetails.fees,
     };
 
     mutate(createAppointmentData, {
-      onSuccess: (data) => {
-        console.log("Appointment data", data);
+      onSuccess: async (data) => {
+        // console.log("Appointment data", data);
         setSymptoms("");
         setSelectedDate("");
         setSelectedSlot(null);
+        const payment = await api.post("/appointments/start-payment", {
+          appointmentId: data._id,
+        });
+
+        console.log("payment data ==>", payment);
+
+        window.location.href = payment.data.checkout_url;
       },
       onError: (error) => {
         handleAxiosError(error);

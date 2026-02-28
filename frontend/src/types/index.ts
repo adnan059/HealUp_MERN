@@ -67,11 +67,15 @@ export interface ICreateAppointmentData {
   startMinute: number;
   endMinute: number;
   symptoms: string;
+  paymentAmount: number;
 }
 
 export interface IAppointmentDetails extends ICreateAppointmentData {
+  _id: string;
   status: "pending" | "confirmed" | "cancelled";
   paymentStatus: "unpaid" | "paid" | "refunded";
+  paymentExpiresAt: Date;
+  paymentTransactionId?: string;
   createdAt: Date;
   updatedAt: Date;
 }

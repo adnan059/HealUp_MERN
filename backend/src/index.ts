@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import routes from "./routes";
 import { AppError } from "./lib/types";
+import { startCleanupWorker } from "./workers/cleanupWorker";
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ const startServer = async () => {
   try {
     await mongoose.connect(DB_URL);
     console.log("Database connected successfully");
+    startCleanupWorker();
     app.listen(PORT, () => {
       console.log(`Server running at http://localhost:${PORT}`);
     });

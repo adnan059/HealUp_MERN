@@ -8,7 +8,10 @@ export interface IAppointment {
   startMinute: number; // minutes from midnight (0–1439)
   endMinute: number; // minutes from midnight (1–1440)
   status: "pending" | "confirmed" | "cancelled";
-  paymentStatus: "unpaid" | "paid" | "refunded";
+  paymentStatus: "unpaid" | "paid" | "refunded" | "expired";
+  paymentAmount: number;
+  paymentExpiresAt?: Date;
+  paymentTransactionId?: string;
 }
 
 const appointmentSchema = new Schema<IAppointment>(
@@ -54,9 +57,12 @@ const appointmentSchema = new Schema<IAppointment>(
 
     paymentStatus: {
       type: String,
-      enum: ["unpaid", "paid", "refunded"],
+      enum: ["unpaid", "paid", "refunded", "expired"],
       default: "unpaid",
     },
+    paymentExpiresAt: Date,
+    paymentTransactionId: String,
+    paymentAmount: Number,
   },
   { timestamps: true },
 );
@@ -68,6 +74,8 @@ appointmentSchema.index(
   { doctorId: 1, date: 1, startMinute: 1 },
   { unique: true },
 );
+
+appointmentSchema.index({ paymentExpiresAt: 1 });
 
 export const Appointment = model<IAppointment>(
   "Appointment",

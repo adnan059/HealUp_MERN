@@ -55,3 +55,11 @@ export const getDhakaToday = () => formatDhakaDate(getDhakaDateNow()); // '2026-
 export const isToday = (date: string) => {
   return getDhakaToday() === date;
 };
+
+export const getPaymentExpiryTime = () => {
+  const nowDhaka = getDhakaDateNow();
+
+  return new Date(
+    nowDhaka.getTime() + Number(process.env.PAYMENT_WINDOW_MINUTES) * 60 * 1000,
+  );
+};
