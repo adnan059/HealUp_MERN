@@ -15,12 +15,14 @@ const DoctorCard = ({ doctor }: { doctor: IDoctor }) => {
       />
       <div className="doctorInfo">
         <h2 className="doctorName">Dr. {doctor?.userId?.name}</h2>
-        <p className="specialty">- {doctor.specialty} -</p>
+        <p className="specialty">{doctor.specialty}</p>
+        <hr />
         <div className="metadata">
           <p>
             <Award size={20} className="text-indigo-800" />
             <span>{doctor.experience} years</span>
           </p>
+
           <p>
             <GraduationCap size={20} className="text-indigo-800" />
             <span className="degree">{doctor.degree}</span>

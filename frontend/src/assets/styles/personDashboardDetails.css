@@ -1,0 +1,30 @@
+.personDashboardDetails {
+  @apply flex flex-col justify-center items-center gap-4 mt-16;
+}
+
+.personDashboardDetails .personImage {
+  @apply max-w-80 w-full mx-auto shadow-xl  rounded-full;
+}
+
+.personDashboardDetails .personImage img {
+  @apply rounded-full;
+}
+.personDashboardDetails .personTextInfo {
+  @apply flex flex-col justify-center items-center mt-5 gap-5;
+}
+
+.personDashboardDetails .personFullName {
+  @apply font-semibold text-indigo-600 text-4xl capitalize;
+}
+
+.personDashboardDetails .personRoles {
+  @apply divide-x divide-gray-400 flex justify-center items-center;
+}
+
+.personDashboardDetails .personRoles span {
+  @apply px-3 capitalize;
+}
+
+.personDashboardDetails .personEmail {
+  @apply text-indigo-600 underline;
+}

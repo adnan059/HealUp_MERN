@@ -3,14 +3,18 @@
 }
 
 .doctorDetails .doctorInfo {
-  @apply gap-8 flex flex-col md:flex-row justify-center items-center;
+  @apply gap-8 flex flex-col md:flex-row justify-center items-center bg-indigo-50 rounded-xl p-6;
+}
+
+.doctorDetails .doctorDetailsIcon {
+  @apply text-indigo-600;
 }
 
 .doctorDetails .doctorInfo > div {
   @apply max-w-110 w-full;
 }
 .doctorDetails .doctorInfo .doctorImage img {
-  @apply w-full;
+  @apply max-w-80 w-full rounded-full mx-auto;
 }
 
 .doctorDetails .doctorInfo .doctorTextData {
@@ -18,11 +22,11 @@
 }
 
 .doctorDetails .doctorInfo .doctorTextData > h2 {
-  @apply text-4xl capitalize font-semibold mb-5;
+  @apply text-3xl capitalize font-semibold mb-5;
 }
 
 .doctorDetails .doctorInfo .doctorTextData > p {
-  @apply flex items-center gap-1 capitalize;
+  @apply flex text-base items-center gap-1.5 capitalize;
 }
 
 .doctorDetails .doctorInfo .doctorTextData > .degree {

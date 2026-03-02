@@ -133,16 +133,16 @@ const BookAppointment = ({
 
         {selectedDate && (
           <div className="">
-            <Label>Select Slot</Label>
+            <Label>Select a slot</Label>
             {isPending_slot && <p>Loading Slots ...</p>}
             <div className="grid grid-cols-3 gap-2">
               {slots?.map((slot) => (
                 <button
                   key={slot.startMinute}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`border p-2 rounded-lg ${
+                  className={`slotButton ${
                     selectedSlot?.startMinute === slot.startMinute
-                      ? "bg-indigo-500 text-white"
+                      ? "bg-indigo-600 text-white"
                       : ""
                   }`}
                 >
@@ -159,7 +159,7 @@ const BookAppointment = ({
         >
           {isPending_createAppointment
             ? "Booking Appointment ..."
-            : "Book Appointment"}
+            : "Book Appointment & Make Payment"}
         </Button>
       </div>
     </div>

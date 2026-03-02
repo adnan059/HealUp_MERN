@@ -13,6 +13,8 @@
 @import "./assets/styles/createDoctorProfile.css";
 @import "./assets/styles/doctorDetails.css";
 @import "./assets/styles/bookAppointments.css";
+@import "./assets/styles/personDashboardDetails.css";
+@import "./assets/styles/adminDashboardTable.css";
 /* --------------------------- *** --------------------------- */
 @custom-variant dark (&: is(.dark *));
 

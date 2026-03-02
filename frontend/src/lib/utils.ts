@@ -37,3 +37,15 @@ export const formatTime = (minute: number) => {
 
   return `${hour12}:${m.toString().padStart(2, "0")} ${ampm}`;
 };
+
+export const getAvatatFallbackText = (fullName: string) => {
+  const partsOfName = fullName.split(" ");
+  const firstLetterOfFirstName = partsOfName[0]
+    ?.slice(0, 1)
+    .toLocaleUpperCase();
+  const firstLetterOfSecondName = partsOfName[1]?.slice(0, 1).toUpperCase();
+  if (firstLetterOfSecondName) {
+    return firstLetterOfFirstName + firstLetterOfSecondName;
+  }
+  return firstLetterOfFirstName;
+};

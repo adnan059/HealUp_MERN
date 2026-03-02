@@ -6,7 +6,7 @@
 }
 
 .bookAppointmentContainer {
-  @apply max-w-150 mx-auto w-full flex flex-col gap-10 shadow-lg  p-6;
+  @apply max-w-150 mx-auto w-full flex flex-col gap-10 bg-indigo-50  p-8 rounded-lg;
 }
 
 .bookAppointmentContainer > div {
@@ -24,7 +24,10 @@
 .bookAppointmentContainer .selectDateTrigger {
   @apply border-2 border-indigo-600;
 }
+.bookAppointment .slotButton {
+  @apply border-2 border-indigo-600 p-2 rounded-lg;
+}
 
 .bookAppointmentContainer > button {
-  @apply bg-indigo-600 w-60 mx-auto;
+  @apply bg-indigo-600 mx-auto cursor-pointer hover:bg-indigo-900;
 }

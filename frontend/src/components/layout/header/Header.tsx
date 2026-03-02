@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import HeaderMenuDropdown from "./HeaderMenuDropdown";
 import { useAuth } from "@/provider/auth-context";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatatFallbackText } from "@/lib/utils";
 
 const Header = () => {
   const { isAuthenticated, logout, user } = useAuth();
@@ -36,11 +38,21 @@ const Header = () => {
             )}
             <li>
               {isAuthenticated ? (
-                <button onClick={handleLogout}>Logout</button>
+                <button className="logoutButton" onClick={handleLogout}>
+                  Logout
+                </button>
               ) : (
                 <Link to={"/login"}>Login</Link>
               )}
             </li>
+            {isAuthenticated && (
+              <Avatar>
+                <AvatarImage />
+                <AvatarFallback>
+                  {user && getAvatatFallbackText(user?.name)}
+                </AvatarFallback>
+              </Avatar>
+            )}
           </ul>
         </nav>
 

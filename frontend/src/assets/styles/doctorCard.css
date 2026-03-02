@@ -1,9 +1,9 @@
 .doctorCard {
-  @apply bg-indigo-100 p-4 flex flex-col gap-3 justify-center items-center;
+  @apply bg-indigo-100 p-6 flex flex-col gap-3 justify-center items-center rounded-xl;
 }
 
 .doctorCard img {
-  @apply max-w-64 w-full;
+  @apply max-w-52 w-full rounded-full;
 }
 
 .doctorCard .doctorInfo {
@@ -11,15 +11,19 @@
 }
 
 .doctorCard .doctorName {
-  @apply text-center text-lg mt-3 font-semibold text-indigo-900 capitalize;
+  @apply text-center text-lg mt-3 font-semibold text-indigo-600 capitalize;
 }
 
 .doctorCard .specialty {
-  @apply text-center mt-2 text-base capitalize;
+  @apply text-center mt-2 text-base capitalize font-medium text-slate-500;
+}
+
+.doctorCard hr {
+  @apply max-w-16 w-full mx-auto my-4 border-indigo-600;
 }
 
 .doctorCard .metadata {
-  @apply w-full flex justify-between items-center my-4;
+  @apply w-full flex justify-center gap-6 items-center my-4;
 }
 
 .doctorCard .metadata p {
@@ -31,5 +35,5 @@
 }
 
 .doctorCard button {
-  @apply block mx-auto mt-5 bg-indigo-800 hover:bg-indigo-600;
+  @apply cursor-pointer block mx-auto mt-5 bg-indigo-800 hover:bg-indigo-600;
 }

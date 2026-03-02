@@ -35,19 +35,20 @@ const DoctorDetails = () => {
           <div className="doctorTextData">
             <h2>Dr. {data?.userId?.name}</h2>
             <p>
-              <Stethoscope size={20} />
+              <Stethoscope className="doctorDetailsIcon" size={20} />
               <span>Specialist in {data?.specialty}</span>
             </p>
             <p className="degree">
-              <GraduationCap size={20} /> <span>{data?.degree}</span>
+              <GraduationCap className="doctorDetailsIcon" size={20} />{" "}
+              <span>{data?.degree}</span>
             </p>
             <p>
-              <Award size={20} />
+              <Award className="doctorDetailsIcon" size={20} />
               <span>{data?.experience}</span> Years of Experience
             </p>
             <p className="about">{data?.about}</p>
             <p>
-              <Coins size={20} />{" "}
+              <Coins className="doctorDetailsIcon" size={20} />{" "}
               <span>Consultation Fee: {data?.fees} BDT</span>
             </p>
           </div>
