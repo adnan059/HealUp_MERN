@@ -201,6 +201,7 @@ export const createAppointment = async (
 
     res.status(201).json(appointment);
   } catch (error: any) {
+    console.log("create appointment error ==>", error);
     if (error.code === 11000) {
       return next(createError(409, "Slot already booked"));
     }

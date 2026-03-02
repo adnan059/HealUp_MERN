@@ -11,7 +11,7 @@ dotenv.config();
 
 // env validation
 const validateEnv = () => {
-  const requiredVars = ["DB_URL", "FRONTEND_BASE_URL", "JWT_SK", "NODE_ENV"];
+  const requiredVars = ["DB_URL", "FRONTEND_URL", "JWT_SK", "NODE_ENV"];
   const missingVars = requiredVars.filter((key) => !process.env[key]);
   if (missingVars.length > 0) {
     console.log("Missing environment variables:");
@@ -24,7 +24,7 @@ validateEnv();
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
 const DB_URL = process.env.DB_URL as string;
-const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL as string;
+const FRONTEND_URL = process.env.FRONTEND_URL as string;
 
 // app setup
 const app = express();
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: FRONTEND_BASE_URL,
+    origin: FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),

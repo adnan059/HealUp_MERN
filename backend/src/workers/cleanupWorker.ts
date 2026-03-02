@@ -13,6 +13,7 @@ export const startCleanupWorker = () => {
 
     for (const appointment of expiredAppointments) {
       appointment.status = "cancelled";
+      appointment.paymentStatus = "expired";
       await appointment.save();
       console.log("Expired appointment cancelled:", appointment._id);
     }

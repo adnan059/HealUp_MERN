@@ -72,7 +72,12 @@ const appointmentSchema = new Schema<IAppointment>(
 
 appointmentSchema.index(
   { doctorId: 1, date: 1, startMinute: 1 },
-  { unique: true },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: { $in: ["pending", "confirmed"] },
+    },
+  },
 );
 
 appointmentSchema.index({ paymentExpiresAt: 1 });
