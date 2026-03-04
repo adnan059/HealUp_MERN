@@ -79,3 +79,13 @@ export interface IAppointmentDetails extends ICreateAppointmentData {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IGetAllDoctorsForAdminParams {
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  specialty?: string;
+  isApproved?: boolean;
+  search?: string;
+}

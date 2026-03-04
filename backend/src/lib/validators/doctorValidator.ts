@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 const specialties = [
   "cardiology",
@@ -76,6 +76,25 @@ export const createDoctorValidator = [
     .withMessage("Slot duration is required")
     .isIn([20, 30])
     .withMessage("Slot duration must be 20 or 30 minutes"),
+];
+
+export const getAllDoctorsForAdminValidator = [
+  query("page").optional().isInt({ min: 1 }),
+  query("limit").optional().isInt({ min: 1, max: 100 }),
+  query("sortBy")
+    .optional()
+    .isIn([
+      "user.name",
+      "user.email",
+      "specialty",
+      "experience",
+      "isApproved",
+      "createdAt",
+    ]),
+  query("sortOrder").optional().isIn(["asc", "desc"]),
+  query("specialty").optional().isString(),
+  query("isApproved").optional().isBoolean().toBoolean(),
+  query("search").optional().isString(),
 ];
 
 // handle doctor account approval validator

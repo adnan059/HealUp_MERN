@@ -118,7 +118,7 @@ export const findAllDoctors = async (
       sort = "",
       page = "1",
       limit = "2",
-    } = req.query;
+    } = req.query as Record<string, string>;
 
     const pageNumber = Number(page);
     const limitNumber = Number(limit);

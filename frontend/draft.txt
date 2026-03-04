@@ -17,3 +17,7 @@ Private routes
 doctor card items
 -----------------
 name, speciality, experience, degree
+
+admin dashboard table
+---------------------
+sl, name, email, speciality, experience, isApproved, action

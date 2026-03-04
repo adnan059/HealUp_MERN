@@ -61,3 +61,140 @@ export const handleDoctorApprovalCtrl = async (
     session.endSession();
   }
 };
+
+// get doctors with pagination, sorting, filtering and search
+
+export const getAllDoctorsForAdminCtrl = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const {
+      page = "1",
+      limit = "10",
+      sortBy = "createdAt",
+      sortOrder = "asc",
+      specialty,
+      isApproved,
+      search,
+    } = req.query as Record<string, string>;
+
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const matchStage: any = {};
+
+    if (specialty) {
+      matchStage.specialty = specialty;
+    }
+
+    if (isApproved !== undefined) {
+      matchStage.isApproved = isApproved === "true";
+    }
+
+    const pipeline: any[] = [
+      // Filter doctor fields
+      { $match: matchStage },
+
+      // Join User
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+
+      // Join DoctorSchedule
+      {
+        $lookup: {
+          from: "doctorschedules",
+          localField: "_id",
+          foreignField: "doctorId",
+          as: "schedule",
+        },
+      },
+      {
+        $unwind: {
+          path: "$schedule",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ];
+
+    // Search by email
+    if (search) {
+      pipeline.push({
+        $match: {
+          "user.email": { $regex: search, $options: "i" },
+        },
+      });
+    }
+
+    // Sorting
+    pipeline.push({
+      $sort: {
+        [sortBy]: sortOrder === "asc" ? 1 : -1,
+      },
+    });
+
+    // Projection — VERY IMPORTANT
+    pipeline.push({
+      $project: {
+        _id: 1,
+        doctorId: "$_id",
+        about: 1,
+        address: 1,
+        degree: 1,
+        specialty: 1,
+        experience: 1,
+        fees: 1,
+        isApproved: 1,
+        createdAt: 1,
+        updatedAt: 1,
+
+        // Schedule
+        slotDuration: "$schedule.slotDuration",
+        workingDays: "$schedule.workingDays",
+
+        // User (explicit safe fields only)
+        userId: {
+          _id: "$user._id",
+          name: "$user.name",
+          email: "$user.email",
+          avatar: "$user.avatar",
+          roles: "$user.roles",
+        },
+      },
+    });
+
+    // Pagination with total count
+    pipeline.push({
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limitNumber }],
+        totalCount: [{ $count: "count" }],
+      },
+    });
+
+    const result = await Doctor.aggregate(pipeline);
+
+    const doctors = result[0]?.data || [];
+    const total = result[0]?.totalCount[0]?.count || 0;
+
+    res.status(200).json({
+      data: doctors,
+      meta: {
+        page: pageNumber,
+        limit: limitNumber,
+        total,
+        totalPages: Math.ceil(total / limitNumber),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
