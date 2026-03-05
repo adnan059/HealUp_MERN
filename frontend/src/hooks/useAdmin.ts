@@ -10,7 +10,7 @@ export const useGetAllDoctorsForAdmin = (
   params: IGetAllDoctorsForAdminParams,
 ) => {
   return useQuery<IAdminDoctorsResponse>({
-    queryKey: ["admin-doctors", params],
+    queryKey: ["admin-doctors", JSON.stringify(params)],
     queryFn: async () => fetchData("/admin/doctors", params),
     placeholderData: (prev) => prev,
   });

@@ -18,8 +18,8 @@ export interface IDoctor {
   address: string;
   isApproved: boolean;
   userId: IUser;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type DoctorSpecialty = (typeof specialties)[number];
@@ -46,8 +46,8 @@ export interface IDoctorDetailsWithSchedule {
   isApproved: boolean;
   slotDuration: 20 | 30;
   workingDays: number[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ICreateDoctorData {
@@ -77,8 +77,8 @@ export interface IAppointmentDetails extends ICreateAppointmentData {
   paymentStatus: "unpaid" | "paid" | "refunded";
   paymentExpiresAt: Date;
   paymentTransactionId?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IGetAllDoctorsForAdminParams {
@@ -101,13 +101,12 @@ export interface IAdminDoctorsResponse {
   };
 }
 
-export type AdminDashboardFilterKey =
-  | "search"
-  | "specialty"
-  | "isApproved"
-  | "limit"
-  | "sortBy"
-  | "sortOrder"
-  | "page";
-
-export type AdminDashboardFilterValue = string | string[] | number;
+export type AdminDashboardFilters = {
+  search: string;
+  specialty: string[];
+  isApproved: "all" | "true" | "false";
+  limit: number;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  page: number;
+};

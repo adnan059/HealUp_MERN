@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useMemo, type ChangeEvent, useCallback } from "react";
+import {
+  useState,
+  useMemo,
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+} from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -30,8 +36,7 @@ import {
 import { specialties as specialtiesList } from "@/lib";
 import debounce from "lodash/debounce";
 import type {
-  AdminDashboardFilterKey,
-  AdminDashboardFilterValue,
+  AdminDashboardFilters,
   IDoctorDetailsWithSchedule,
 } from "@/types";
 import Loader from "@/components/shared/Loader";
@@ -75,8 +80,15 @@ const AdminDashboardTable = () => {
     [set],
   );
 
+  useEffect(() => {
+    return () => updateUrlStateDebounced.cancel();
+  }, [updateUrlStateDebounced]);
+
   const handleFilterChange = useCallback(
-    (key: AdminDashboardFilterKey, value: AdminDashboardFilterValue) => {
+    (
+      key: keyof AdminDashboardFilters,
+      value: AdminDashboardFilters[keyof AdminDashboardFilters],
+    ) => {
       if (key === "specialty" && Array.isArray(value)) {
         updateUrlStateDebounced({ specialty: value.join(","), page: "1" });
       } else {
@@ -110,8 +122,12 @@ const AdminDashboardTable = () => {
       debounce((val: string) => {
         handleFilterChange("search", val);
       }, 500),
-    [],
+    [handleFilterChange],
   );
+
+  useEffect(() => {
+    return () => handleSearch.cancel();
+  }, [handleSearch]);
 
   // Specialty filter toggle
   const toggleSpecialty = (sp: string) => {
@@ -128,8 +144,14 @@ const AdminDashboardTable = () => {
   const columns = useMemo<ColumnDef<IDoctorDetailsWithSchedule>[]>(
     () => [
       { header: "SL", cell: ({ row }) => (page - 1) * limit + row.index + 1 },
-      { accessorKey: "userId.name", header: "Name" },
-      { accessorKey: "userId.email", header: "Email" },
+      {
+        header: "Name",
+        accessorFn: (row) => row.userId.name,
+      },
+      {
+        header: "Email",
+        accessorFn: (row) => row.userId.email,
+      },
       { accessorKey: "specialty", header: "Specialty" },
       { accessorKey: "experience", header: "Experience" },
       {
