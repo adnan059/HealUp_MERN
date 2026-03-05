@@ -7,6 +7,7 @@ import {
 } from "../lib/validators/doctorValidator";
 import { validateRequest } from "../middlewares/validateRequest";
 import {
+  deleteDoctorCtrl,
   getAllDoctorsForAdminCtrl,
   handleDoctorApprovalCtrl,
 } from "../controllers/adminCtrl";
@@ -31,6 +32,16 @@ router.put(
   doctorApprovalValidator,
   validateRequest,
   handleDoctorApprovalCtrl,
+);
+
+// delete a doctor
+router.delete(
+  "/delete/doctor/:id",
+  verifyToken,
+  verifyAdmin,
+  monoIdParam("id"),
+  validateRequest,
+  deleteDoctorCtrl,
 );
 
 export default router;

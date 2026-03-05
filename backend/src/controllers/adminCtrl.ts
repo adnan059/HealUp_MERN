@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Doctor } from "../models/doctorModel";
 import { createError } from "../lib/utils";
 import User from "../models/userModel";
+import DoctorSchedule from "../models/doctorScheduleModel";
 
 // approve a doctor
 export const handleDoctorApprovalCtrl = async (
@@ -194,6 +195,34 @@ export const getAllDoctorsForAdminCtrl = async (
         totalPages: Math.ceil(total / limitNumber),
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// delete doctor
+export const deleteDoctorCtrl = async (
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const doctor = await Doctor.findById(id);
+    if (!doctor) return next(createError(404, "Doctor not found"));
+    await DoctorSchedule.findOneAndDelete({ doctorId: doctor._id });
+    const user = await User.findById(doctor.userId);
+    if (!user) return next(createError(404, "User not found"));
+
+    const newRoles = user?.roles.filter((role) => role !== "doctor");
+
+    user.roles = newRoles;
+
+    await user.save();
+
+    await Doctor.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Doctor Deleted Successfully" });
   } catch (error) {
     next(error);
   }

@@ -4,15 +4,10 @@ import Loader from "@/components/shared/Loader";
 import type { IDoctor } from "@/types";
 interface IDoctorListProps {
   doctors: IDoctor[];
-
   isPending: boolean;
 }
 
-const DoctorsList = ({
-  doctors,
-
-  isPending,
-}: IDoctorListProps) => {
+const DoctorsList = ({ doctors, isPending }: IDoctorListProps) => {
   if (isPending) {
     return <Loader />;
   }

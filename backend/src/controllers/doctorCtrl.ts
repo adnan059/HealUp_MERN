@@ -117,7 +117,7 @@ export const findAllDoctors = async (
       specialization = "all",
       sort = "",
       page = "1",
-      limit = "2",
+      limit = "6",
     } = req.query as Record<string, string>;
 
     const pageNumber = Number(page);

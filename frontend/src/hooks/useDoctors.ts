@@ -27,6 +27,7 @@ export const useGetAllDoctors = ({
       fetchData(
         `/doctors/find/all?specialization=${specialization}&sort=${sort}&page=${page}`,
       ),
+    placeholderData: (prev) => prev,
   });
 };
 

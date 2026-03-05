@@ -32,6 +32,7 @@ export interface IFetchAllDoctors {
   page: string;
 }
 
+// same as IDoctor in chatgpt
 export interface IDoctorDetailsWithSchedule {
   _id: string;
   doctorId: string;
@@ -89,3 +90,24 @@ export interface IGetAllDoctorsForAdminParams {
   isApproved?: boolean;
   search?: string;
 }
+
+export interface IAdminDoctorsResponse {
+  data: IDoctorDetailsWithSchedule[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export type AdminDashboardFilterKey =
+  | "search"
+  | "specialty"
+  | "isApproved"
+  | "limit"
+  | "sortBy"
+  | "sortOrder"
+  | "page";
+
+export type AdminDashboardFilterValue = string | string[] | number;
