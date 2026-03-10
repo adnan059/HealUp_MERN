@@ -4,14 +4,10 @@ import { Label } from "@/components/ui/label";
 import { useLoginMutation } from "@/hooks/useAuth";
 import { handleAxiosError } from "@/lib/utils";
 import { useAuth } from "@/provider/auth-context";
+import type { LoginFormValuesType } from "@/types";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-
-export type LoginFormValuesType = {
-  email: string;
-  password: string;
-};
 
 const Register = () => {
   const {
@@ -34,8 +30,7 @@ const Register = () => {
     console.log("Submitted:", formData);
 
     mutate(formData, {
-      onSuccess: async (data) => {
-        console.log("Login Data:", data);
+      onSuccess: async () => {
         await refetchUser();
         navigate("/");
       },

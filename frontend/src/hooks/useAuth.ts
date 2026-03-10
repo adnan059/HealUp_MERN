@@ -1,18 +1,19 @@
 import { postData } from "@/lib/crud-utils";
-import type { LoginFormValuesType } from "@/pages/auth/Login";
-import type { RegisterFormValuesType } from "@/pages/auth/Register";
+
+import type { LoginFormValuesType, RegisterFormValuesType } from "@/types";
+
 import { useMutation } from "@tanstack/react-query";
 
 export const useRegisterMutation = () => {
   return useMutation({
-    mutationFn: async (data: RegisterFormValuesType) =>
-      postData("/auth/register", data),
+    mutationFn: (data: RegisterFormValuesType) =>
+      postData<void, RegisterFormValuesType>("/auth/register", data),
   });
 };
 
 export const useLoginMutation = () => {
   return useMutation({
-    mutationFn: async (data: LoginFormValuesType) =>
-      postData("/auth/login", data),
+    mutationFn: (data: LoginFormValuesType) =>
+      postData<void, LoginFormValuesType>("/auth/login", data),
   });
 };

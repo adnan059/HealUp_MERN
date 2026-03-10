@@ -62,7 +62,7 @@ export const createPayment = async (
     currency: "BDT",
     client_ip: req.ip || "127.0.0.1", // sandbox safe default
     return_url: `${process.env.BACKEND_URL}/appointments/payment-callback`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
+    cancel_url: `${process.env.FRONTEND_URL}/payment/payment-cancel`,
     customer_name: user.name || "N/A",
     customer_email: user.email || "test@example.com",
     customer_phone: user.phone || "01700000000",

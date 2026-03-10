@@ -4,29 +4,29 @@ import type { DoctorSpecialty } from "@/types";
 
 import type { SetURLSearchParams } from "react-router-dom";
 
-type DoctorSpecialization = "all" | DoctorSpecialty;
+type DoctorSpecialties = "all" | DoctorSpecialty;
 
 interface IDoctorSpecializationProps {
-  selectedSpecialization: DoctorSpecialization;
+  selectedSpecialty: DoctorSpecialties;
   setSearchParams: SetURLSearchParams;
 }
 
 const DoctorSpecializations = ({
-  selectedSpecialization,
+  selectedSpecialty,
   setSearchParams,
 }: IDoctorSpecializationProps) => {
-  console.log(selectedSpecialization);
-  const handleSelectSpecialization = (value: DoctorSpecialization) => {
+  console.log(selectedSpecialty);
+  const handleSelectSpecialty = (value: DoctorSpecialties) => {
     setSearchParams((prev) => {
-      const currentSpecialization = prev.get("specialization");
+      const currentSpecialty = prev.get("specialty");
 
-      if (currentSpecialization === value) {
+      if (currentSpecialty === value) {
         return prev;
       }
 
       const params = new URLSearchParams(prev);
 
-      params.set("specialization", value);
+      params.set("specialty", value);
       params.set("page", "1");
 
       return params;
@@ -42,10 +42,10 @@ const DoctorSpecializations = ({
       <ul className="doctorSpecialiazationsList">
         {specialties.map((specialty) => (
           <li
-            onClick={() => handleSelectSpecialization(specialty)}
+            onClick={() => handleSelectSpecialty(specialty)}
             className={cn(
               "doctorSpecialiazationItem",
-              specialty === selectedSpecialization &&
+              specialty === selectedSpecialty &&
                 "bg-indigo-400 px-2 text-white",
             )}
             key={specialty}

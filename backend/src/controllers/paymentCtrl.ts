@@ -60,7 +60,7 @@ export const paymentCallback = async (
     console.log("order_id:", order_id);
 
     if (!order_id) {
-      return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
+      return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
     }
 
     const verification = await verifyPayment(order_id);
@@ -68,7 +68,7 @@ export const paymentCallback = async (
     console.log("verification:", verification);
 
     if (!verification || !verification.length) {
-      return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
+      return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
     }
 
     const paymentInfo = verification[0];
@@ -82,12 +82,14 @@ export const paymentCallback = async (
     console.log("appointment:", appointment?._id);
 
     if (!appointment) {
-      return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
+      return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
     }
 
     // already paid
     if (appointment.paymentStatus === "paid") {
-      return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment/payment-success`,
+      );
     }
 
     // payment window expired
@@ -99,7 +101,9 @@ export const paymentCallback = async (
       appointment.paymentStatus = "expired";
       await appointment.save();
 
-      return res.redirect(`${process.env.FRONTEND_URL}/payment-expired`);
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment/payment-expired`,
+      );
     }
 
     /**
@@ -119,12 +123,14 @@ export const paymentCallback = async (
 
       console.log("Payment confirmed for:", appointment._id);
 
-      return res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment/payment-success`,
+      );
     }
 
     console.log("Payment failed condition hit");
 
-    return res.redirect(`${process.env.FRONTEND_URL}/payment-failed`);
+    return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
   } catch (error) {
     next(error);
   }

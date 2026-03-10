@@ -23,21 +23,27 @@ api.interceptors.response.use(
   },
 );
 
-export const postData = async <T>(url: string, data?: unknown): Promise<T> => {
-  const response = await api.post<T>(url, data);
+export const postData = async <TResponse, TRequest = unknown>(
+  url: string,
+  data?: TRequest,
+): Promise<TResponse> => {
+  const response = await api.post<TResponse>(url, data);
   return response.data;
 };
 
-export const fetchData = async <T>(
+export const fetchData = async <T, P = unknown>(
   url: string,
-  params?: unknown,
+  params?: P,
 ): Promise<T> => {
   const response = await api.get<T>(url, { params });
   return response.data;
 };
 
-export const updateData = async <T>(url: string, data: unknown): Promise<T> => {
-  const response = await api.put<T>(url, data);
+export const updateData = async <TResponse, TRequest = unknown>(
+  url: string,
+  data: TRequest,
+): Promise<TResponse> => {
+  const response = await api.put<TResponse>(url, data);
   return response.data;
 };
 

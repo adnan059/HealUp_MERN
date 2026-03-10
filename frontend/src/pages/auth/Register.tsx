@@ -4,16 +4,11 @@ import { Label } from "@/components/ui/label";
 import { useRegisterMutation } from "@/hooks/useAuth";
 import { handleAxiosError } from "@/lib/utils";
 import { useAuth } from "@/provider/auth-context";
+import type { RegisterFormValuesType } from "@/types";
 
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-
-export type RegisterFormValuesType = {
-  name: string;
-  email: string;
-  password: string;
-};
 
 const Register = () => {
   const {
@@ -36,8 +31,7 @@ const Register = () => {
 
   const onSubmit: SubmitHandler<RegisterFormValuesType> = async (formData) => {
     mutate(formData, {
-      onSuccess: async (data) => {
-        console.log("register data", data);
+      onSuccess: async () => {
         reset();
         await refetchUser();
         navigate("/");

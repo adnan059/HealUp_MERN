@@ -1,39 +1,48 @@
 import { fetchData, postData } from "@/lib/crud-utils";
-import type { ICreateDoctorData, IFetchAllDoctors } from "@/types";
+import type {
+  FeaturedDoctorsType,
+  IAllDoctors,
+  ICreateDoctorData,
+  IDoctorDetailsWithSchedule,
+  IFetchAllDoctors,
+} from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useCreateDoctorMutation = () => {
   return useMutation({
-    mutationFn: async (data: ICreateDoctorData) =>
-      postData("/doctors/create", data),
+    mutationFn: (data: ICreateDoctorData) =>
+      postData<void, ICreateDoctorData>("/doctors/create", data),
   });
 };
 
 export const useGetFeaturedDoctors = () => {
-  return useQuery({
+  return useQuery<FeaturedDoctorsType>({
     queryKey: ["featuredDoctors"],
-    queryFn: async () => fetchData("/doctors/find/random"),
+    queryFn: () => fetchData<FeaturedDoctorsType>("/doctors/find/random"),
   });
 };
 
 export const useGetAllDoctors = ({
-  specialization,
+  specialty,
   sort,
   page,
 }: IFetchAllDoctors) => {
-  return useQuery({
-    queryKey: ["doctors", specialization, sort, page],
-    queryFn: async () =>
-      fetchData(
-        `/doctors/find/all?specialization=${specialization}&sort=${sort}&page=${page}`,
-      ),
+  return useQuery<IAllDoctors>({
+    queryKey: ["doctors", specialty, sort, page],
+    queryFn: () =>
+      fetchData<IAllDoctors>(`/doctors/find/all`, {
+        specialty,
+        sort,
+        page,
+      }),
     placeholderData: (prev) => prev,
   });
 };
 
 export const useGetADoctorById = (id: string) => {
-  return useQuery({
+  return useQuery<IDoctorDetailsWithSchedule>({
     queryKey: ["doctor", id],
-    queryFn: async () => fetchData(`/doctors/find/${id}`),
+    queryFn: () => fetchData<IDoctorDetailsWithSchedule>(`/doctors/find/${id}`),
+    enabled: !!id,
   });
 };

@@ -12,25 +12,25 @@ import type { DoctorSpecialty } from "@/types";
 
 import type { SetURLSearchParams } from "react-router-dom";
 
-type DoctorSpecialization = "all" | DoctorSpecialty;
+type DoctorSpecialties = "all" | DoctorSpecialty;
 
 interface ISelectDoctorSpecializationProps {
-  selectedSpecialization: DoctorSpecialization;
+  selectedSpecialty: DoctorSpecialties;
   setSearchParams: SetURLSearchParams;
 }
 
 const SelectDoctorSpecialization = ({
-  selectedSpecialization,
+  selectedSpecialty,
   setSearchParams,
 }: ISelectDoctorSpecializationProps) => {
-  const handleChange = (value: DoctorSpecialization) => {
+  const handleChange = (value: DoctorSpecialties) => {
     setSearchParams((prev) => {
-      const currentSpecialization = prev.get("specialization");
-      if (currentSpecialization === value) {
+      const currentSpecialty = prev.get("specialty");
+      if (currentSpecialty === value) {
         return prev;
       }
       const params = new URLSearchParams(prev);
-      params.set("specialization", value);
+      params.set("specialty", value);
       params.set("page", "1");
       return params;
     });
@@ -40,11 +40,11 @@ const SelectDoctorSpecialization = ({
       behavior: "smooth",
     });
   };
-  console.log(selectedSpecialization);
+
   return (
     <div className="selectDoctorSpecialization">
       <p>Select Specialization</p>
-      <Select value={selectedSpecialization} onValueChange={handleChange}>
+      <Select value={selectedSpecialty} onValueChange={handleChange}>
         <SelectTrigger className="selectTrigger">
           <SelectValue placeholder="Select Specialization" />
         </SelectTrigger>

@@ -4,6 +4,7 @@ export const useTableUrlState = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const get = (key: string, defaultValue: any) =>
     searchParams.get(key) ?? defaultValue;
 

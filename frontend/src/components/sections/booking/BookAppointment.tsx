@@ -20,11 +20,10 @@ import { useAuth } from "@/provider/auth-context";
 import type {
   ICreateAppointmentData,
   IDoctorDetailsWithSchedule,
+  SlotType,
 } from "@/types";
 
 import { useState } from "react";
-
-type SlotType = { startMinute: number; endMinute: number };
 
 const BookAppointment = ({
   doctorDetails,
@@ -35,21 +34,16 @@ const BookAppointment = ({
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<SlotType | null>(null);
   const [symptoms, setSymptoms] = useState("");
+  const [processing, setProcessing] = useState(false);
   const { user } = useAuth();
 
   const { data: workingDays, isPending: isPending_workingDays } =
-    useGetNextWorkingDays(doctorDetails.doctorId) as {
-      data: string[];
-      isPending: boolean;
-    };
+    useGetNextWorkingDays(doctorDetails.doctorId);
 
   const { data: slots, isPending: isPending_slot } = useGetAvailableSlots(
     doctorDetails.doctorId,
     selectedDate,
-  ) as {
-    data: SlotType[];
-    isPending: boolean;
-  };
+  );
 
   const { mutate, isPending: isPending_createAppointment } =
     useCreateNewAppointment();
@@ -68,9 +62,9 @@ const BookAppointment = ({
       paymentAmount: doctorDetails.fees,
     };
 
+    setProcessing(true);
     mutate(createAppointmentData, {
       onSuccess: async (data) => {
-        // console.log("Appointment data", data);
         setSymptoms("");
         setSelectedDate("");
         setSelectedSlot(null);
@@ -84,6 +78,7 @@ const BookAppointment = ({
       },
       onError: (error) => {
         handleAxiosError(error);
+        setProcessing(false);
       },
     });
   };
@@ -154,10 +149,11 @@ const BookAppointment = ({
         )}
 
         <Button
-          disabled={isPending_createAppointment}
+          disabled={isPending_createAppointment || processing}
           onClick={handleBookAppointment}
+          className="disabled:bg-indigo-300"
         >
-          {isPending_createAppointment
+          {processing || isPending_createAppointment
             ? "Booking Appointment ..."
             : "Book Appointment & Make Payment"}
         </Button>

@@ -2,16 +2,12 @@ import DoctorCard from "@/components/shared/DoctorCard";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import { useGetFeaturedDoctors } from "@/hooks/useDoctors";
-import type { IDoctor } from "@/types";
 
 import { useNavigate } from "react-router-dom";
 
 const FeaturedDoctors = () => {
   const navigate = useNavigate();
-  const { data: featuredDoctors, isPending } = useGetFeaturedDoctors() as {
-    data: IDoctor[];
-    isPending: boolean;
-  };
+  const { data: featuredDoctors, isPending } = useGetFeaturedDoctors();
 
   if (isPending) {
     return <Loader />;

@@ -37,6 +37,10 @@ import Header from "./components/layout/header/Header";
 import Footer from "./components/layout/footer/Footer";
 
 import { TooltipProvider } from "./components/ui/tooltip";
+import PaymentSuccessful from "./pages/payments/PaymentSuccessful";
+import PaymentFailed from "./pages/payments/PaymentFailed";
+import PaymentExpired from "./pages/payments/PaymentExpired";
+import PaymentCancelled from "./pages/payments/PaymentCancelled";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -92,6 +96,27 @@ const App = () => {
                       <UserDashboard />
                     </RegisteredUserOnlyRoute>
                   }
+                />
+
+                {/* Payment Routes */}
+                <Route
+                  path="/payment/payment-success"
+                  element={<PaymentSuccessful />}
+                />
+
+                <Route
+                  path="/payment/payment-failed"
+                  element={<PaymentFailed />}
+                />
+
+                <Route
+                  path="/payment/payment-expired"
+                  element={<PaymentExpired />}
+                />
+
+                <Route
+                  path="/payment/payment-cancelled"
+                  element={<PaymentCancelled />}
                 />
 
                 {/* admin routes */}

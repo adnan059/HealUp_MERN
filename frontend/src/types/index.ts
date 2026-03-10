@@ -1,5 +1,24 @@
 import type { specialties } from "@/lib";
 
+export interface IAuthContext {
+  user: IUser | null;
+  isAuthenticated: boolean;
+  refetchUser: () => Promise<void>;
+  logout: () => Promise<void>;
+  isLoading: boolean;
+}
+
+export type RegisterFormValuesType = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type LoginFormValuesType = {
+  email: string;
+  password: string;
+};
+
 export interface IUser {
   _id: string;
   name: string;
@@ -27,10 +46,19 @@ export type DoctorSpecialty = (typeof specialties)[number];
 export type SortOption = "fees_high" | "fees_low" | "exp_high" | "exp_low";
 
 export interface IFetchAllDoctors {
-  specialization: string;
+  specialty: string;
   sort: string;
   page: string;
 }
+
+export interface IAllDoctors {
+  data: IDoctor[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export type FeaturedDoctorsType = IDoctor[];
 
 // same as IDoctor in chatgpt
 export interface IDoctorDetailsWithSchedule {
@@ -110,3 +138,5 @@ export type AdminDashboardFilters = {
   sortOrder: "asc" | "desc";
   page: number;
 };
+
+export type SlotType = { startMinute: number; endMinute: number };

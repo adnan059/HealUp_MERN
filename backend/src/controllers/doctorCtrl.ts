@@ -114,7 +114,7 @@ export const findAllDoctors = async (
 ) => {
   try {
     const {
-      specialization = "all",
+      specialty = "all",
       sort = "",
       page = "1",
       limit = "6",
@@ -125,8 +125,8 @@ export const findAllDoctors = async (
 
     const query: any = { isApproved: true };
 
-    if (specialization !== "all") {
-      query.specialty = specialization;
+    if (specialty !== "all") {
+      query.specialty = specialty;
     }
 
     let sortOption: any = {};

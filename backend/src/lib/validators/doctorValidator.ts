@@ -81,11 +81,15 @@ export const createDoctorValidator = [
 export const getAllDoctorsForAdminValidator = [
   query("page").optional().isInt({ min: 1 }),
   query("limit").optional().isInt({ min: 1, max: 100 }),
+  // FIX: changed "user.name" and "user.email" to "name" and "email"
+  // to match what the frontend sends as column ids.
+  // The controller's sortFieldMap handles the translation to "user.name"
+  // and "user.email" internally before hitting MongoDB.
   query("sortBy")
     .optional()
     .isIn([
-      "user.name",
-      "user.email",
+      "name",
+      "email",
       "specialty",
       "experience",
       "isApproved",

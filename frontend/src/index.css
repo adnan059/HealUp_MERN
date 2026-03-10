@@ -15,6 +15,7 @@
 @import "./assets/styles/bookAppointments.css";
 @import "./assets/styles/personDashboardDetails.css";
 @import "./assets/styles/adminDashboardTable.css";
+@import "./assets/styles/payment.css";
 /* --------------------------- *** --------------------------- */
 @custom-variant dark (&: is(.dark *));
 

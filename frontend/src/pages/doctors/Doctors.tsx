@@ -6,39 +6,31 @@ import Pagination from "@/components/shared/Pagination";
 
 import { useGetAllDoctors } from "@/hooks/useDoctors";
 
-import type { DoctorSpecialty, IDoctor, SortOption } from "@/types";
+import type { DoctorSpecialty, SortOption } from "@/types";
 
 import { useSearchParams } from "react-router-dom";
 
 const Doctors = () => {
   const [searchParams, setSearchParams] = useSearchParams({
     sort: "",
-    specialization: "all",
+    specialty: "all",
     page: "1",
   });
 
-  const selectedSpecialization =
-    (searchParams.get("specialization") as "all" | DoctorSpecialty) || "all";
+  const selectedSpecialty =
+    (searchParams.get("specialty") as "all" | DoctorSpecialty) || "all";
 
   const sort = (searchParams.get("sort") as "" | SortOption) || "";
 
   const page = searchParams.get("page") || "1";
 
   const { data, isPending } = useGetAllDoctors({
-    specialization: selectedSpecialization,
+    specialty: selectedSpecialty,
     sort,
     page,
-  }) as {
-    isPending: boolean;
-    data: {
-      data: IDoctor[];
-      total: number;
-      page: number;
-      totalPages: number;
-    };
-  };
+  });
 
-  console.log(data);
+  //console.log(data);
 
   return (
     <section className="doctors">
@@ -46,12 +38,12 @@ const Doctors = () => {
         <div className="allDoctors">
           <div className="topPart">
             <DoctorSpecializations
-              selectedSpecialization={selectedSpecialization}
+              selectedSpecialty={selectedSpecialty}
               setSearchParams={setSearchParams}
             />
 
             <SelectDoctorSpecialization
-              selectedSpecialization={selectedSpecialization}
+              selectedSpecialty={selectedSpecialty}
               setSearchParams={setSearchParams}
             />
 

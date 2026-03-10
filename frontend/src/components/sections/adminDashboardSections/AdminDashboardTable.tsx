@@ -10,10 +10,13 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-  type SortingState,
-  type Updater,
   type ColumnDef,
 } from "@tanstack/react-table";
+
+// FIX: SortingState, Updater, and onSortingChange are removed entirely.
+// We no longer let TanStack manage sort state — we handle it 100% manually
+// via URL params. TanStack's 3-state cycle (asc→desc→unsorted) was causing
+// desync between its internal state machine and our URL-derived sorting const.
 
 import { Input } from "@/components/ui/input";
 import {
@@ -41,10 +44,21 @@ import type {
 } from "@/types";
 import Loader from "@/components/shared/Loader";
 
+// FIX: The set of columns that are actually sortable on the backend.
+// Columns not in this set (SL, Actions) will not respond to header clicks.
+const SORTABLE_COLUMNS = new Set([
+  "name",
+  "email",
+  "specialty",
+  "experience",
+  "isApproved",
+  "createdAt",
+]);
+
 const AdminDashboardTable = () => {
   const { get, set } = useTableUrlState();
 
-  // URL-based state
+  // URL-based state — single source of truth for everything
   const page = Number(get("page", 1));
   const limit = Number(get("limit", 10));
   const sortBy = get("sortBy", "createdAt");
@@ -55,15 +69,37 @@ const AdminDashboardTable = () => {
   const isApproved = get("isApproved", "all");
   const search = get("search", "");
 
-  // Local state
+  // Local UI state only — nothing sort/filter related
   const [viewDoctor, setViewDoctor] =
     useState<IDoctorDetailsWithSchedule | null>(null);
   const [deleteDoctorId, setDeleteDoctorId] = useState<string | null>(null);
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: sortBy, desc: sortOrder === "desc" },
-  ]);
 
-  // Debounced filter updater to prevent rapid fetches
+  // FIX: handleColumnSort replaces TanStack's onSortingChange entirely.
+  // Logic: clicking the active column toggles asc↔desc (2-state, no unsorted).
+  // Clicking a different column starts fresh at asc.
+  // This is the real-world pattern used in production tables where sort is server-side.
+  const handleColumnSort = useCallback(
+    (columnId: string) => {
+      console.log("columnId clicked:", columnId); // ADD THIS
+      if (!SORTABLE_COLUMNS.has(columnId)) return;
+      if (columnId === sortBy) {
+        // Same column: toggle direction
+        set({
+          sortOrder: sortOrder === "asc" ? "desc" : "asc",
+          page: "1",
+        });
+      } else {
+        // Different column: start at asc
+        set({
+          sortBy: columnId,
+          sortOrder: "asc",
+          page: "1",
+        });
+      }
+    },
+    [sortBy, sortOrder, set],
+  );
+
   const updateUrlStateDebounced = useMemo(
     () =>
       debounce(
@@ -98,7 +134,6 @@ const AdminDashboardTable = () => {
     [updateUrlStateDebounced],
   );
 
-  // Fetch data
   const { data, isPending } = useGetAllDoctorsForAdmin({
     page,
     limit,
@@ -112,11 +147,9 @@ const AdminDashboardTable = () => {
     search: search || undefined,
   });
 
-  // Mutations
   const approvalMutation = useUpdateDoctorApproval();
   const deleteMutation = useDeleteDoctor();
 
-  // Debounced search
   const handleSearch = useMemo(
     () =>
       debounce((val: string) => {
@@ -129,7 +162,6 @@ const AdminDashboardTable = () => {
     return () => handleSearch.cancel();
   }, [handleSearch]);
 
-  // Specialty filter toggle
   const toggleSpecialty = (sp: string) => {
     let newSpecialties = [...selectedSpecialties];
     if (newSpecialties.includes(sp)) {
@@ -140,21 +172,30 @@ const AdminDashboardTable = () => {
     handleFilterChange("specialty", newSpecialties);
   };
 
-  // Columns
+  // FIX: Columns no longer need accessorKey for sort id purposes —
+  // we handle sort clicks manually via handleColumnSort.
+  // Each column has an explicit 'id' field so we can identify it in the header click.
   const columns = useMemo<ColumnDef<IDoctorDetailsWithSchedule>[]>(
     () => [
-      { header: "SL", cell: ({ row }) => (page - 1) * limit + row.index + 1 },
       {
+        id: "sl",
+        header: "SL",
+        cell: ({ row }) => (page - 1) * limit + row.index + 1,
+      },
+      {
+        id: "name",
         header: "Name",
         accessorFn: (row) => row.userId.name,
       },
       {
+        id: "email",
         header: "Email",
         accessorFn: (row) => row.userId.email,
       },
-      { accessorKey: "specialty", header: "Specialty" },
-      { accessorKey: "experience", header: "Experience" },
+      { id: "specialty", accessorKey: "specialty", header: "Specialty" },
+      { id: "experience", accessorKey: "experience", header: "Experience" },
       {
+        id: "isApproved",
         accessorKey: "isApproved",
         header: "Approval",
         cell: ({ row }) => {
@@ -217,27 +258,20 @@ const AdminDashboardTable = () => {
     [page, limit],
   );
 
-  // Table
+  // FIX: Table no longer receives sorting state or onSortingChange.
+  // TanStack Table is used ONLY for rendering (getCoreRowModel, flexRender).
+  // Sort state lives entirely in the URL. This is the correct pattern for
+  // server-side sorting — you don't want TanStack touching sort at all.
   const table = useReactTable({
     data: data?.data ?? [],
     columns,
-    state: { sorting },
-    onSortingChange: (updater: Updater<SortingState>) => {
-      const newSorting =
-        typeof updater === "function" ? updater(sorting) : updater;
-      setSorting(newSorting);
-      if (!newSorting.length) return;
-      const { id, desc } = newSorting[0];
-      handleFilterChange("sortBy", id);
-      handleFilterChange("sortOrder", desc ? "desc" : "asc");
-    },
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <div className="mt-16">
       {/* Filters */}
-      <div className="flex gap-4 mb-4 flex-wrap ">
+      <div className="flex gap-4 mb-4 flex-wrap">
         <Input
           placeholder="Search by email"
           className="border border-indigo-600"
@@ -297,25 +331,35 @@ const AdminDashboardTable = () => {
         <Loader />
       ) : (
         <table className="w-full">
-          <thead className="bg-indigo-600 ">
+          <thead className="bg-indigo-600">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="p-2 border cursor-pointer select-none text-white border-indigo-600"
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
-                    {{
-                      asc: " 🔼",
-                      desc: " 🔽",
-                    }[header.column.getIsSorted() as string] ?? null}
-                  </th>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const columnId = header.column.id;
+                  const isSortable = SORTABLE_COLUMNS.has(columnId);
+                  const isActive = sortBy === columnId;
+
+                  return (
+                    <th
+                      key={header.id}
+                      // FIX: onClick now calls our manual handleColumnSort,
+                      // not TanStack's getToggleSortingHandler(). This gives us
+                      // full control: only 2 states (asc/desc), no unsorted state,
+                      // no internal TanStack state machine to fight against.
+                      onClick={() => handleColumnSort(columnId)}
+                      className={`p-2 border select-none text-white border-indigo-600 ${
+                        isSortable ? "cursor-pointer" : "cursor-default"
+                      }`}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                      {/* FIX: sort arrow is derived from URL state, not TanStack state */}
+                      {isActive ? (sortOrder === "asc" ? " 🔼" : " 🔽") : null}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
@@ -341,20 +385,14 @@ const AdminDashboardTable = () => {
         <Button
           disabled={page <= 1}
           className="bg-indigo-600 hover:bg-indigo-700"
-          onClick={() => {
-            // Update page immediately without debounce
-            set({ page: String(page - 1) });
-          }}
+          onClick={() => set({ page: String(page - 1) })}
         >
           Previous
         </Button>
         <Button
           disabled={page >= (data?.meta.totalPages ?? 1)}
           className="bg-indigo-600 hover:bg-indigo-700"
-          onClick={() => {
-            // Update page immediately without debounce
-            set({ page: String(page + 1) });
-          }}
+          onClick={() => set({ page: String(page + 1) })}
         >
           Next
         </Button>

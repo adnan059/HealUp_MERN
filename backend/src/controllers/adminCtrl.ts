@@ -70,6 +70,7 @@ export const getAllDoctorsForAdminCtrl = async (
   res: Response,
   next: NextFunction,
 ) => {
+  console.log("Query received:", req.query);
   try {
     const {
       page = "1",
@@ -88,18 +89,32 @@ export const getAllDoctorsForAdminCtrl = async (
     const matchStage: any = {};
 
     if (specialty) {
-      matchStage.specialty = specialty;
+      const specialtyList = specialty
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      matchStage.specialty =
+        specialtyList.length > 1 ? { $in: specialtyList } : specialtyList[0];
     }
 
     if (isApproved !== undefined) {
       matchStage.isApproved = isApproved === "true";
     }
 
-    const pipeline: any[] = [
-      // Filter doctor fields
-      { $match: matchStage },
+    // FIX: Instead of sorting on 'user.name'/'user.email' (dot-notation on
+    // a $lookup-joined subdocument which MongoDB can silently ignore),
+    // we promote those fields to the top level with $addFields first,
+    // then sort on the flat field names '_userName' and '_userEmail'.
+    // Underscore prefix marks them as temporary pipeline fields.
+    const sortFieldMap: Record<string, string> = {
+      name: "_userName",
+      email: "_userEmail",
+    };
+    const resolvedSortField = sortFieldMap[sortBy] ?? sortBy;
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
 
-      // Join User
+    const pipeline: any[] = [
+      { $match: matchStage },
       {
         $lookup: {
           from: "users",
@@ -109,8 +124,6 @@ export const getAllDoctorsForAdminCtrl = async (
         },
       },
       { $unwind: "$user" },
-
-      // Join DoctorSchedule
       {
         $lookup: {
           from: "doctorschedules",
@@ -127,7 +140,6 @@ export const getAllDoctorsForAdminCtrl = async (
       },
     ];
 
-    // Search by email
     if (search) {
       pipeline.push({
         $match: {
@@ -136,53 +148,58 @@ export const getAllDoctorsForAdminCtrl = async (
       });
     }
 
-    // Sorting
+    // FIX: $addFields promotes user.name and user.email to flat top-level
+    // fields before $sort runs. MongoDB $sort on 'user.name' (dot-notation
+    // into a joined subdocument) can be silently ignored in some MongoDB
+    // versions. Sorting on a flat top-level field always works reliably.
     pipeline.push({
-      $sort: {
-        [sortBy]: sortOrder === "asc" ? 1 : -1,
+      $addFields: {
+        _userName: "$user.name",
+        _userEmail: "$user.email",
       },
     });
 
-    // Projection — VERY IMPORTANT
+    // Now $sort runs on flat fields — guaranteed to work
     pipeline.push({
-      $project: {
-        _id: 1,
-        doctorId: "$_id",
-        about: 1,
-        address: 1,
-        degree: 1,
-        specialty: 1,
-        experience: 1,
-        fees: 1,
-        isApproved: 1,
-        createdAt: 1,
-        updatedAt: 1,
-
-        // Schedule
-        slotDuration: "$schedule.slotDuration",
-        workingDays: "$schedule.workingDays",
-
-        // User (explicit safe fields only)
-        userId: {
-          _id: "$user._id",
-          name: "$user.name",
-          email: "$user.email",
-          avatar: "$user.avatar",
-          roles: "$user.roles",
-        },
-      },
+      $sort: { [resolvedSortField]: sortDirection },
     });
 
-    // Pagination with total count
     pipeline.push({
       $facet: {
-        data: [{ $skip: skip }, { $limit: limitNumber }],
+        data: [
+          { $skip: skip },
+          { $limit: limitNumber },
+          {
+            $project: {
+              _id: 1,
+              about: 1,
+              address: 1,
+              degree: 1,
+              specialty: 1,
+              experience: 1,
+              fees: 1,
+              isApproved: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              slotDuration: "$schedule.slotDuration",
+              workingDays: "$schedule.workingDays",
+              // FIX: _userName and _userEmail are temporary pipeline fields —
+              // they are NOT included in $project so they never reach the client
+              userId: {
+                _id: "$user._id",
+                name: "$user.name",
+                email: "$user.email",
+                avatar: "$user.avatar",
+                roles: "$user.roles",
+              },
+            },
+          },
+        ],
         totalCount: [{ $count: "count" }],
       },
     });
 
     const result = await Doctor.aggregate(pipeline);
-
     const doctors = result[0]?.data || [];
     const total = result[0]?.totalCount[0]?.count || 0;
 

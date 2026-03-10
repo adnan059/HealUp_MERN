@@ -4,14 +4,24 @@ import type {
   IGetAllDoctorsForAdminParams,
 } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 // getting all doctors for admin dashboard
 export const useGetAllDoctorsForAdmin = (
   params: IGetAllDoctorsForAdminParams,
 ) => {
   return useQuery<IAdminDoctorsResponse>({
-    queryKey: ["admin-doctors", JSON.stringify(params)],
-    queryFn: async () => fetchData("/admin/doctors", params),
+    queryKey: [
+      "admin-doctors",
+      params.isApproved,
+      params.limit,
+      params.page,
+      params.search,
+      params.sortBy,
+      params.sortOrder,
+      params.specialty,
+    ],
+    queryFn: () => fetchData<IAdminDoctorsResponse>("/admin/doctors", params),
     placeholderData: (prev) => prev,
   });
 };
@@ -21,15 +31,17 @@ export const useUpdateDoctorApproval = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      isApproved,
-    }: {
-      id: string;
-      isApproved: boolean;
-    }) => updateData(`/admin/approve/doctor/${id}`, { isApproved }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["admin-doctors"] }),
+    mutationFn: ({ id, isApproved }: { id: string; isApproved: boolean }) =>
+      updateData<{ message: string }, { isApproved: boolean }>(
+        `/admin/approve/doctor/${id}`,
+        {
+          isApproved,
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-doctors"] });
+      toast.success("Doctor Updated Successfully", { richColors: true });
+    },
   });
 };
 
@@ -37,8 +49,11 @@ export const useUpdateDoctorApproval = () => {
 export const useDeleteDoctor = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => deleteData(`/admin/delete/doctor/${id}`),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["admin-doctors"] }),
+    mutationFn: (id: string) =>
+      deleteData<{ message: string }>(`/admin/delete/doctor/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-doctors"] });
+      toast.success("Doctor Deleted Successfully", { richColors: true });
+    },
   });
 };

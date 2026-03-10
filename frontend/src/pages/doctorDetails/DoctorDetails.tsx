@@ -1,7 +1,7 @@
 import BookAppointment from "@/components/sections/booking/BookAppointment";
 import Loader from "@/components/shared/Loader";
 import { useGetADoctorById } from "@/hooks/useDoctors";
-import type { IDoctorDetailsWithSchedule } from "@/types";
+
 import { Award, Coins, GraduationCap, Stethoscope } from "lucide-react";
 import { useParams } from "react-router-dom";
 
@@ -10,10 +10,7 @@ const DoctorDetails = () => {
     id: string;
   };
 
-  const { data, isPending } = useGetADoctorById(id) as {
-    data: IDoctorDetailsWithSchedule;
-    isPending: boolean;
-  };
+  const { data, isPending } = useGetADoctorById(id);
 
   if (isPending) {
     return <Loader />;
@@ -53,7 +50,7 @@ const DoctorDetails = () => {
             </p>
           </div>
         </div>
-        <BookAppointment doctorDetails={data} />
+        {data && <BookAppointment doctorDetails={data} />}
       </div>
     </section>
   );

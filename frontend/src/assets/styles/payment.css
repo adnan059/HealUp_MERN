@@ -1,0 +1,27 @@
+.payment {
+  @apply min-h-[calc(110vh-231px)] pt-42;
+}
+
+.payment .sectionContainer {
+  @apply flex justify-center items-center;
+}
+
+.paymentContent {
+  @apply text-center space-y-8 max-w-175 w-full bg-indigo-100 rounded-xl py-10 px-6;
+}
+
+.paymentContent h1 {
+  @apply text-4xl font-semibold;
+}
+
+.payment p {
+  @apply text-lg;
+}
+
+.paymentContent span {
+  @apply text-5xl;
+}
+
+.paymentContent a {
+  @apply bg-green-600 text-white py-4 font-semibold max-w-96 w-full mx-auto rounded-lg;
+}

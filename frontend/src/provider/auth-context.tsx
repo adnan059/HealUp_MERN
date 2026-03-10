@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { api } from "@/lib/crud-utils";
-import type { IUser } from "@/types";
+import type { IAuthContext, IUser } from "@/types";
 import {
   createContext,
   useCallback,
@@ -10,14 +10,6 @@ import {
   type ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface IAuthContext {
-  user: IUser | null;
-  isAuthenticated: boolean;
-  refetchUser: () => Promise<void>;
-  logout: () => Promise<void>;
-  isLoading: boolean;
-}
 
 export const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
