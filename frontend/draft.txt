@@ -21,3 +21,10 @@ name, speciality, experience, degree
 admin dashboard table
 ---------------------
 sl, name, email, speciality, experience, isApproved, action
+
+payment routes
+--------------
+payment-success
+payment-failed
+payment-expired
+payment-cancelled

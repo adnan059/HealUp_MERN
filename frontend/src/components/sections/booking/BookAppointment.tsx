@@ -68,13 +68,15 @@ const BookAppointment = ({
         setSymptoms("");
         setSelectedDate("");
         setSelectedSlot(null);
-        const payment = await api.post("/appointments/start-payment", {
-          appointmentId: data._id,
-        });
-
-        console.log("payment data ==>", payment);
-
-        window.location.href = payment.data.checkout_url;
+        try {
+          const payment = await api.post("/appointments/start-payment", {
+            appointmentId: data._id,
+          });
+          window.location.href = payment.data.checkout_url;
+        } catch (error) {
+          handleAxiosError(error);
+          setProcessing(false);
+        }
       },
       onError: (error) => {
         handleAxiosError(error);

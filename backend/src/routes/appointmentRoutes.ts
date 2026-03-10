@@ -7,7 +7,12 @@ import {
 import { verifyToken } from "../middlewares/authMiddleware";
 import { monoIdParam } from "../lib/validators/commonValidator";
 import { validateRequest } from "../middlewares/validateRequest";
-import { paymentCallback, startPayment } from "../controllers/paymentCtrl";
+import {
+  paymentCallback,
+  startPayment,
+  getPaymentStatus,
+} from "../controllers/paymentCtrl";
+
 const router = express.Router();
 
 router.get(
@@ -24,5 +29,8 @@ router.post("/book", verifyToken, createAppointment);
 router.post("/start-payment", verifyToken, startPayment);
 
 router.get("/payment-callback", paymentCallback);
+
+// Protected: only the patient who made the appointment can check its status
+router.get("/payment-status", verifyToken, getPaymentStatus);
 
 export default router;

@@ -23,7 +23,13 @@ const FeaturedDoctors = () => {
           ))}
         </div>
         <Button
-          onClick={() => navigate("/doctors")}
+          onClick={() => {
+            navigate("/doctors");
+            scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
           className="viewMoreDoctorsButton"
         >
           View More

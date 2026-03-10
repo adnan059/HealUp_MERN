@@ -11,11 +11,11 @@
 }
 
 .paymentContent h1 {
-  @apply text-4xl font-semibold;
+  @apply text-4xl font-semibold capitalize;
 }
 
 .payment p {
-  @apply text-lg;
+  @apply text-lg capitalize;
 }
 
 .paymentContent span {
@@ -23,5 +23,5 @@
 }
 
 .paymentContent a {
-  @apply bg-green-600 text-white py-4 font-semibold max-w-96 w-full mx-auto rounded-lg;
+  @apply bg-green-600 text-white py-4 font-semibold max-w-96 w-full mx-auto rounded-lg capitalize;
 }

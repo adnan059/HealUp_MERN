@@ -44,6 +44,8 @@ import type {
 } from "@/types";
 import Loader from "@/components/shared/Loader";
 
+import DoctorDetailsDialogContent from "./DoctorDetailsDialogContent";
+
 // FIX: The set of columns that are actually sortable on the backend.
 // Columns not in this set (SL, Actions) will not respond to header clicks.
 const SORTABLE_COLUMNS = new Set([
@@ -73,6 +75,8 @@ const AdminDashboardTable = () => {
   const [viewDoctor, setViewDoctor] =
     useState<IDoctorDetailsWithSchedule | null>(null);
   const [deleteDoctorId, setDeleteDoctorId] = useState<string | null>(null);
+
+  console.log(viewDoctor);
 
   // FIX: handleColumnSort replaces TanStack's onSortingChange entirely.
   // Logic: clicking the active column toggles asc↔desc (2-state, no unsorted).
@@ -146,6 +150,8 @@ const AdminDashboardTable = () => {
       isApproved === "all" ? undefined : isApproved === "true" ? true : false,
     search: search || undefined,
   });
+
+  console.log(data);
 
   const approvalMutation = useUpdateDoctorApproval();
   const deleteMutation = useDeleteDoctor();
@@ -402,7 +408,8 @@ const AdminDashboardTable = () => {
       <Dialog open={!!viewDoctor} onOpenChange={() => setViewDoctor(null)}>
         <DialogContent>
           <DialogTitle>Doctor Details</DialogTitle>
-          <pre>{JSON.stringify(viewDoctor, null, 2)}</pre>
+
+          <DoctorDetailsDialogContent viewDoctor={viewDoctor} />
         </DialogContent>
       </Dialog>
 

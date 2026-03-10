@@ -1,0 +1,13 @@
+.viewDoctorDetails {
+  @apply space-y-4;
+}
+
+.viewDoctorDetails h2 span,
+.viewDoctorDetails p span {
+  @apply font-semibold text-indigo-600;
+}
+
+.viewDoctorDetails h2,
+.viewDoctorDetails p {
+  @apply capitalize;
+}

@@ -1,17 +1,35 @@
 import { Request } from "express";
 
-let token: string | null = null;
-let cachedStoreId: string | null = null;
+// ─── Token Cache ─────────────────────────────────────────────────────────────
+// Tokens are cached with an expiry timestamp to avoid re-fetching on every
+// payment request. We use a 55-minute buffer (tokens typically last 60 min).
 
+interface TokenCache {
+  token: string;
+  store_id: string;
+  expiresAt: number; // epoch ms
+}
+
+const TOKEN_TTL_MS = 55 * 60 * 1000; // 55 minutes
+
+let tokenCache: TokenCache | null = null;
+
+const isCacheValid = (): boolean => {
+  return !!tokenCache && Date.now() < tokenCache.expiresAt;
+};
+
+// ─── Get Token ────────────────────────────────────────────────────────────────
 /**
- * Get ShurjoPay token and store_id.
- * Caches the token and store_id to avoid repeated requests.
+ * Fetches a ShurjoPay token and store_id.
+ * Returns cached values if still valid, otherwise fetches a fresh token.
  */
 export const getToken = async (): Promise<{
   token: string;
   store_id: string;
 }> => {
-  if (token && cachedStoreId) return { token, store_id: cachedStoreId };
+  if (isCacheValid() && tokenCache) {
+    return { token: tokenCache.token, store_id: tokenCache.store_id };
+  }
 
   const response = await fetch(`${process.env.SP_ENDPOINT}/api/get_token`, {
     method: "POST",
@@ -25,24 +43,42 @@ export const getToken = async (): Promise<{
   });
 
   if (!response.ok) {
-    throw new Error("Failed to get token from ShurjoPay");
+    throw new Error(
+      `ShurjoPay token request failed with status: ${response.status}`,
+    );
   }
 
   const data = await response.json();
 
   if (!data.token || !data.store_id) {
-    throw new Error("Invalid token response from ShurjoPay");
+    throw new Error(
+      "Invalid token response from ShurjoPay: missing token or store_id",
+    );
   }
 
-  token = data.token;
-  cachedStoreId = data.store_id.toString() as string;
+  // Cache the new token with expiry
+  tokenCache = {
+    token: data.token,
+    store_id: data.store_id.toString(),
+    expiresAt: Date.now() + TOKEN_TTL_MS,
+  };
 
-  return { token: data.token, store_id: cachedStoreId };
+  return { token: tokenCache.token, store_id: tokenCache.store_id };
 };
 
+// ─── Invalidate Token Cache ───────────────────────────────────────────────────
 /**
- * Create a new payment for an appointment.
- * Returns the ShurjoPay checkout_url for redirect.
+ * Call this if you ever get a 401/403 from ShurjoPay mid-flow,
+ * so the next request forces a fresh token fetch.
+ */
+export const invalidateTokenCache = (): void => {
+  tokenCache = null;
+};
+
+// ─── Create Payment ───────────────────────────────────────────────────────────
+/**
+ * Initiates a new ShurjoPay payment for a given appointment.
+ * Returns the full ShurjoPay response including checkout_url.
  */
 export const createPayment = async (
   appointmentId: string,
@@ -52,17 +88,18 @@ export const createPayment = async (
 ) => {
   const { token, store_id } = await getToken();
 
-  // Required fields for ShurjoPay sandbox/production
   const payload = {
     prefix: process.env.SP_PREFIX,
-    token, // token from getToken
-    store_id, // store_id from getToken
+    token,
+    store_id,
     amount,
     order_id: appointmentId,
     currency: "BDT",
-    client_ip: req.ip || "127.0.0.1", // sandbox safe default
+    // Falls back to a sandbox-safe IP if req.ip is unavailable
+    client_ip: req.ip || "127.0.0.1",
     return_url: `${process.env.BACKEND_URL}/appointments/payment-callback`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment/payment-cancel`,
+    // Must exactly match the route path defined in App.tsx
+    cancel_url: `${process.env.FRONTEND_URL}/payment/payment-cancelled`,
     customer_name: user.name || "N/A",
     customer_email: user.email || "test@example.com",
     customer_phone: user.phone || "01700000000",
@@ -71,7 +108,7 @@ export const createPayment = async (
     customer_post_code: user.postCode || "1212",
   };
 
-  // ShurjoPay expects form-urlencoded or multipart/form-data
+  // ShurjoPay requires form-urlencoded body for this endpoint
   const formBody = new URLSearchParams(payload as any);
 
   const res = await fetch(`${process.env.SP_ENDPOINT}/api/secret-pay`, {
@@ -85,26 +122,32 @@ export const createPayment = async (
 
   if (!res.ok) {
     const text = await res.text();
-    console.error("ShurjoPay createPayment error:", text);
-    throw new Error("Payment creation failed at ShurjoPay");
+    console.error("ShurjoPay createPayment error response:", text);
+    throw new Error(
+      `Payment creation failed at ShurjoPay with status: ${res.status}`,
+    );
   }
 
   const data = await res.json();
 
   if (!data.checkout_url) {
     console.error("ShurjoPay response missing checkout_url:", data);
-    throw new Error("Invalid response from ShurjoPay");
+    throw new Error("Invalid response from ShurjoPay: checkout_url not found");
   }
 
-  // Return full payment info including checkout_url
   return data;
 };
 
+// ─── Verify Payment ───────────────────────────────────────────────────────────
 /**
- * Verify payment after callback from ShurjoPay.
- * Returns the verification info array.
+ * Verifies a ShurjoPay payment after the callback is received.
+ * Returns the array of payment info objects from ShurjoPay.
  */
 export const verifyPayment = async (order_id: string) => {
+  if (!order_id) {
+    throw new Error("order_id is required for payment verification");
+  }
+
   const { token } = await getToken();
 
   const res = await fetch(`${process.env.SP_ENDPOINT}/api/verification`, {
@@ -118,15 +161,17 @@ export const verifyPayment = async (order_id: string) => {
 
   if (!res.ok) {
     const text = await res.text();
-    console.error("ShurjoPay verifyPayment error:", text);
-    throw new Error("ShurjoPay verification failed");
+    console.error("ShurjoPay verifyPayment error response:", text);
+    throw new Error(`ShurjoPay verification failed with status: ${res.status}`);
   }
 
   const data = await res.json();
 
-  if (!Array.isArray(data)) {
+  if (!Array.isArray(data) || data.length === 0) {
     console.error("ShurjoPay verification returned invalid data:", data);
-    throw new Error("Invalid verification response from ShurjoPay");
+    throw new Error(
+      "Invalid verification response from ShurjoPay: expected a non-empty array",
+    );
   }
 
   return data; // array of payment info objects

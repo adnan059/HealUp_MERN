@@ -2,6 +2,7 @@ import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
+import { workingDaysList } from ".";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,4 +49,16 @@ export const getAvatatFallbackText = (fullName: string) => {
     return firstLetterOfFirstName + firstLetterOfSecondName;
   }
   return firstLetterOfFirstName;
+};
+
+export const getWorkinDays = (days: Array<number>) => {
+  let text = "";
+  days.forEach((day) => {
+    workingDaysList.forEach((wd) => {
+      if (wd.value === day) {
+        text += wd.label + ", ";
+      }
+    });
+  });
+  return text.slice(0, -2);
 };

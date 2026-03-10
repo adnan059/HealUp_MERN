@@ -140,3 +140,8 @@ export type AdminDashboardFilters = {
 };
 
 export type SlotType = { startMinute: number; endMinute: number };
+
+export interface IPaymentStatusResponse {
+  paymentStatus: "paid" | "unpaid" | "expired";
+  appointmentStatus: "confirmed" | "cancelled" | "pending";
+}

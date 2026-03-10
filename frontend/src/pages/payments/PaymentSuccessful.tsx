@@ -1,6 +1,12 @@
+import { usePaymentStatus } from "@/hooks/usePaymentStatus";
+import Loader from "@/components/shared/Loader";
 import { Link } from "react-router-dom";
 
 const PaymentSuccessful = () => {
+  const { isLoading } = usePaymentStatus("paid");
+
+  if (isLoading) return <Loader />;
+
   return (
     <section className="payment">
       <div className="sectionContainer">

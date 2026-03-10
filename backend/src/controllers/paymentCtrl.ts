@@ -3,7 +3,6 @@ import { Appointment } from "../models/appointmentModel";
 import { createError, getDhakaDateNow } from "../lib/utils";
 import { createPayment, verifyPayment } from "../services/shurjoPayService";
 import { AuthenticatedRequest } from "../lib/types";
-import { IUser } from "../models/userModel";
 
 // START PAYMENT
 export const startPayment = async (
@@ -88,7 +87,7 @@ export const paymentCallback = async (
     // already paid
     if (appointment.paymentStatus === "paid") {
       return res.redirect(
-        `${process.env.FRONTEND_URL}/payment/payment-success`,
+        `${process.env.FRONTEND_URL}/payment/payment-success?txn_id=${order_id}`,
       );
     }
 
@@ -102,7 +101,7 @@ export const paymentCallback = async (
       await appointment.save();
 
       return res.redirect(
-        `${process.env.FRONTEND_URL}/payment/payment-expired`,
+        `${process.env.FRONTEND_URL}/payment/payment-expired?txn_id=${order_id}`,
       );
     }
 
@@ -118,19 +117,56 @@ export const paymentCallback = async (
     if (isPaymentSuccessful) {
       appointment.paymentStatus = "paid";
       appointment.status = "confirmed";
-
       await appointment.save();
 
       console.log("Payment confirmed for:", appointment._id);
 
       return res.redirect(
-        `${process.env.FRONTEND_URL}/payment/payment-success`,
+        `${process.env.FRONTEND_URL}/payment/payment-success?txn_id=${order_id}`,
       );
     }
 
     console.log("Payment failed condition hit");
 
-    return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/payment/payment-failed?txn_id=${order_id}`,
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET PAYMENT STATUS
+// Called by the frontend payment result pages to verify the result is real.
+// Matches by paymentTransactionId AND patientId so users can only query
+// their own appointments.
+export const getPaymentStatus = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { txn_id } = req.query as { txn_id: string };
+
+    if (!txn_id) {
+      return next(createError(400, "txn_id is required"));
+    }
+
+    const appointment = await Appointment.findOne({
+      paymentTransactionId: txn_id,
+      patientId: req.user?._id, // ensures only the owner can query
+    })
+      .select("paymentStatus status")
+      .lean();
+
+    if (!appointment) {
+      return next(createError(404, "Appointment not found"));
+    }
+
+    res.status(200).json({
+      paymentStatus: appointment.paymentStatus, // "paid" | "unpaid" | "expired"
+      appointmentStatus: appointment.status, // "confirmed" | "cancelled" | "pending"
+    });
   } catch (error) {
     next(error);
   }
