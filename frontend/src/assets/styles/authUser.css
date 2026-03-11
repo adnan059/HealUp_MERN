@@ -7,7 +7,7 @@
 }
 
 .authFormTitle {
-  @apply text-2xl font-semibold  mb-10 text-center;
+  @apply text-2xl font-semibold  mb-10 text-center text-indigo-600;
 }
 .authForm {
   @apply max-w-125 w-full mx-auto space-y-8;

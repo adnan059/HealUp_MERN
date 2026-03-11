@@ -2,6 +2,8 @@ import express from "express";
 import {
   createAppointment,
   getAvailableSlots,
+  getMyAppointmentsAsDoctor,
+  getMyAppointmentsAsPatient,
   getNextWorkingDays,
 } from "../controllers/appointmentCtrl";
 import { verifyToken } from "../middlewares/authMiddleware";
@@ -14,6 +16,10 @@ import {
 } from "../controllers/paymentCtrl";
 
 const router = express.Router();
+
+router.get("/my-appointments", verifyToken, getMyAppointmentsAsPatient);
+
+router.get("/my-patients", verifyToken, getMyAppointmentsAsDoctor);
 
 router.get(
   "/working-days/:doctorId",

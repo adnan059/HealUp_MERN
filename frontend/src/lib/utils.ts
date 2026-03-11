@@ -62,3 +62,41 @@ export const getWorkinDays = (days: Array<number>) => {
   });
   return text.slice(0, -2);
 };
+
+// ── helper ──────────────────────────────────────────────────────────────────
+// Mirrors the backend's getDhakaDateNow() + nowInMinutes() logic.
+// Gets the current date string (YYYY-MM-DD) and current minute-of-day
+// both expressed in Asia/Dhaka timezone, so past/future judgment is
+// consistent with how the backend generates and validates appointment slots.
+
+export const getDhakaNow = (): { todayStr: string; nowMinute: number } => {
+  // toLocaleString with Asia/Dhaka gives us a Date object whose
+  // local time reflects Dhaka time — same technique as the backend utils.ts
+  const dhakaDate = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }),
+  );
+
+  // YYYY-MM-DD via en-CA locale (same as backend's formatDhakaDate)
+  const todayStr = dhakaDate.toLocaleDateString("en-CA", {
+    timeZone: "Asia/Dhaka",
+  });
+
+  const nowMinute = dhakaDate.getHours() * 60 + dhakaDate.getMinutes();
+
+  return { todayStr, nowMinute };
+};
+
+// Returns true if the appointment slot has already passed in Dhaka time.
+// An appointment is "past" when:
+//   - its date is before today, OR
+//   - its date is today AND its startMinute <= current minute
+export const isAppointmentPast = (
+  date: string,
+  startMinute: number,
+  todayStr: string,
+  nowMinute: number,
+): boolean => {
+  if (date < todayStr) return true;
+  if (date === todayStr && startMinute <= nowMinute) return true;
+  return false;
+};

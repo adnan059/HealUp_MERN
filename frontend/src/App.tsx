@@ -29,6 +29,15 @@ const RegisteredUserOnlyRoute = lazy(
   () => import("./routes/RegisteredUserOnlyRoute"),
 );
 
+const PaymentSuccessful = lazy(
+  () => import("./pages/payments/PaymentSuccessful"),
+);
+const PaymentFailed = lazy(() => import("./pages/payments/PaymentFailed"));
+const PaymentExpired = lazy(() => import("./pages/payments/PaymentExpired"));
+const PaymentCancelled = lazy(
+  () => import("./pages/payments/PaymentCancelled"),
+);
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./provider/auth-context";
 import { Toaster } from "./components/ui/sonner";
@@ -37,10 +46,7 @@ import Header from "./components/layout/header/Header";
 import Footer from "./components/layout/footer/Footer";
 
 import { TooltipProvider } from "./components/ui/tooltip";
-import PaymentSuccessful from "./pages/payments/PaymentSuccessful";
-import PaymentFailed from "./pages/payments/PaymentFailed";
-import PaymentExpired from "./pages/payments/PaymentExpired";
-import PaymentCancelled from "./pages/payments/PaymentCancelled";
+
 const queryClient = new QueryClient();
 
 const App = () => {

@@ -116,7 +116,11 @@ const Register = () => {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isPending}>
+            <Button
+              type="submit"
+              className="w-full bg-indigo-600"
+              disabled={isPending}
+            >
               {isPending ? "Registering..." : "Register"}
             </Button>
           </form>

@@ -6,6 +6,7 @@ export interface IAuthContext {
   refetchUser: () => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
+  doctorProfile: IDoctorDetailsWithSchedule | null;
 }
 
 export type RegisterFormValuesType = {
@@ -144,4 +145,49 @@ export type SlotType = { startMinute: number; endMinute: number };
 export interface IPaymentStatusResponse {
   paymentStatus: "paid" | "unpaid" | "expired";
   appointmentStatus: "confirmed" | "cancelled" | "pending";
+}
+
+export interface IPatientAppointment {
+  _id: string;
+  doctorId: {
+    _id: string;
+    specialty: string;
+    userId: {
+      _id: string;
+      name: string;
+      avatar: string;
+    };
+  };
+  patientId: string;
+  date: string;
+  startMinute: number;
+  endMinute: number;
+  symptoms: string;
+  status: "pending" | "confirmed" | "cancelled";
+  paymentStatus: "unpaid" | "paid" | "refunded" | "expired";
+  paymentAmount: number;
+  paymentTransactionId?: string;
+  paymentExpiresAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IDoctorAppointment {
+  _id: string;
+  doctorId: string;
+  patientId: {
+    _id: string;
+    name: string;
+    avatar: string;
+  };
+  date: string;
+  startMinute: number;
+  endMinute: number;
+  symptoms: string;
+  status: "confirmed"; // only confirmed shown
+  paymentStatus: "paid"; // only paid shown
+  paymentAmount: number;
+  paymentTransactionId?: string;
+  createdAt: string;
+  updatedAt: string;
 }

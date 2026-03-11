@@ -199,3 +199,28 @@ export const findRandomDoctorsCtrl = async (
     next(error);
   }
 };
+
+export const findDoctorByUserIdCtrl = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?._id;
+    const doctor = await Doctor.findOne({ userId });
+
+    if (!doctor) {
+      return next(createError(404, "Doctor Profile Not Found"));
+    }
+
+    const doctorScheduleDetails = await DoctorSchedule.findOne({
+      doctorId: doctor?._id,
+    });
+
+    res
+      .status(200)
+      .json({ ...doctor.toObject(), ...doctorScheduleDetails?.toObject() });
+  } catch (error) {
+    next(error);
+  }
+};

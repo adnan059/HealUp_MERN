@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { api } from "@/lib/crud-utils";
-import type { IAuthContext, IUser } from "@/types";
+import type { IAuthContext, IDoctorDetailsWithSchedule, IUser } from "@/types";
 import {
   createContext,
   useCallback,
@@ -16,6 +16,8 @@ export const AuthContext = createContext<IAuthContext | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [doctorProfile, setDoctorProfile] =
+    useState<IDoctorDetailsWithSchedule | null>(null);
   const navigate = useNavigate();
 
   const fetchUser = useCallback(async () => {
@@ -33,6 +35,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchUser();
   }, [fetchUser]);
 
+  const fetchDoctorProfile = useCallback(async () => {
+    try {
+      const { data } = await api.get("/doctors/find/profile-dashboard");
+      setDoctorProfile(data);
+    } catch {
+      setDoctorProfile(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user?.roles.includes("doctor")) {
+      fetchDoctorProfile();
+    }
+  }, [fetchDoctorProfile, user]);
+
   // logout
   const logout = useCallback(async () => {
     try {
@@ -41,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // ignore
     }
     setUser(null);
+    setDoctorProfile(null);
   }, []);
 
   useEffect(() => {
@@ -59,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     refetchUser: fetchUser,
     logout,
     isLoading,
+    doctorProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

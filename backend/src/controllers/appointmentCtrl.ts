@@ -13,8 +13,10 @@ import {
   isToday,
   nowInMinutes,
 } from "../lib/utils";
-import { Appointment } from "../models/appointmentModel";
+
 import { AuthenticatedRequest } from "../lib/types";
+import { Appointment } from "../models/appointmentModel";
+import { Doctor } from "../models/doctorModel";
 
 // get next 5 working days of the specified doctor
 export const getNextWorkingDays = async (
@@ -205,6 +207,69 @@ export const createAppointment = async (
     if (error.code === 11000) {
       return next(createError(409, "Slot already booked"));
     }
+    next(error);
+  }
+};
+
+// getting appointments of a particular patient
+export const getMyAppointmentsAsPatient = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const patientId = req.user?._id;
+
+    const appointments = await Appointment.find({ patientId })
+      .populate({
+        path: "doctorId",
+        select: "userId specialty",
+        populate: {
+          path: "userId",
+          select: "name avatar",
+        },
+      })
+      .sort({ date: -1, startMinute: -1 })
+      .lean();
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// get a doctor's appointemts
+export const getMyAppointmentsAsDoctor = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?._id;
+    const doctorProfile = await Doctor.findOne({ userId }).lean();
+
+    if (!doctorProfile) {
+      return next(createError(404, "Doctor profile not found for this user"));
+    }
+
+    const appointments = await Appointment.find({
+      doctorId: doctorProfile._id,
+      status: "confirmed",
+      paymentStatus: "paid",
+    })
+      .populate({
+        path: "patientId",
+        select: "name avatar",
+      })
+      .sort({ date: -1, startMinute: -1 })
+      .lean();
+
+    const doctorScheduleDetails = await DoctorSchedule.findOne({
+      doctorId: doctorProfile._id,
+    });
+
+    res.status(200).json(appointments);
+  } catch (error) {
     next(error);
   }
 };
