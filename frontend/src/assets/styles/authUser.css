@@ -17,6 +17,10 @@
   @apply space-y-2;
 }
 
+.authFormSection input {
+  @apply border border-indigo-600;
+}
+
 .authFormFooter {
   @apply text-center mt-6;
 }

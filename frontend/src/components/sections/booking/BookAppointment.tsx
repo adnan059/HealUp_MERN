@@ -24,6 +24,8 @@ import type {
 } from "@/types";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const BookAppointment = ({
   doctorDetails,
@@ -36,6 +38,7 @@ const BookAppointment = ({
   const [symptoms, setSymptoms] = useState("");
   const [processing, setProcessing] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const { data: workingDays, isPending: isPending_workingDays } =
     useGetNextWorkingDays(doctorDetails.doctorId);
@@ -49,7 +52,11 @@ const BookAppointment = ({
     useCreateNewAppointment();
 
   const handleBookAppointment = () => {
-    if (!doctorDetails || !user || !selectedSlot || !selectedDate) {
+    if (!user) {
+      toast.error("You need to login first");
+      return navigate("/login");
+    }
+    if (!doctorDetails || !selectedSlot || !selectedDate) {
       return;
     }
     const createAppointmentData: ICreateAppointmentData = {
@@ -93,7 +100,7 @@ const BookAppointment = ({
 
   return (
     <div className="bookAppointment">
-      <h2 className="">Book Appointment</h2>
+      <h2 className="text-indigo-600">Book Appointment</h2>
 
       <div className="bookAppointmentContainer">
         {/* Symptoms */}

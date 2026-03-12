@@ -8,12 +8,12 @@ const Footer = () => {
       <div className="footerContainer">
         <span>© {new Date().getFullYear()} HealUp. All rights reserved.</span>
         <div>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
           {!user?.roles.includes("doctor") && (
             <Link to={"/doctor/apply"}>Apply To Be A Doctor</Link>
           )}
-          <Link to="/privacy">Privacy Policy</Link>
+          <a href="#privacy">Privacy Policy</a>
         </div>
       </div>
     </footer>

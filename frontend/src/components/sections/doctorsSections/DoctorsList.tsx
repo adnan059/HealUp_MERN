@@ -12,7 +12,7 @@ const DoctorsList = ({ doctors, isPending }: IDoctorListProps) => {
     return <Loader />;
   }
   if (!doctors?.length) {
-    return <p>No Doctors Found!</p>;
+    return <p className="text-center pt-10">No Doctors Found!</p>;
   }
   return (
     <div className="allDoctorsContainer">

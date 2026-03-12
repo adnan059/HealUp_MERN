@@ -41,23 +41,27 @@ const UserDashboard = () => {
             <p className="personEmail">{user?.email}</p>
           </div>
         </div>
-        <div className="userDoctorProfileInfo">
-          <div className="left">
-            <p>Specialist in {doctorProfile?.specialty}</p>
-            <p>
-              Degree:{" "}
-              <span className="inline uppercase">{doctorProfile?.degree}</span>
-            </p>
-            <p>Experience: {doctorProfile?.experience} Years</p>
+        {isDoctor && (
+          <div className="userDoctorProfileInfo">
+            <div className="left">
+              <p>Specialist in {doctorProfile?.specialty}</p>
+              <p>
+                Degree:{" "}
+                <span className="inline uppercase">
+                  {doctorProfile?.degree}
+                </span>
+              </p>
+              <p>Experience: {doctorProfile?.experience} Years</p>
+            </div>
+            <div className="right">
+              <p>{doctorProfile?.about}</p>
+            </div>
           </div>
-          <div className="right">
-            <p>{doctorProfile?.about}</p>
-          </div>
-        </div>
+        )}
 
         <div className="userDashboardTablesSection mt-16">
           <h2 className="text-2xl font-semibold text-indigo-600 ">
-            My Dashboard
+            Dashboard Details
           </h2>
           {isPatient && !isDoctor && (
             <>

@@ -7,5 +7,5 @@
 }
 
 .selectDoctorSpecialization .selectTrigger {
-  @apply w-full max-w-48 border border-gray-700;
+  @apply w-full max-w-48 border border-indigo-600;
 }

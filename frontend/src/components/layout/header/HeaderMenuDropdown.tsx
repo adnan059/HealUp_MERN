@@ -41,13 +41,23 @@ const HeaderMenuDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => setIsMenuOpen(false)}>
+          <DropdownMenuItem
+            onClick={() => {
+              setIsMenuOpen(false);
+              scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
             <Link to={"/doctors"} className="headerMenuDropdownLinkItem">
               <Stethoscope className="headerMenuDropdownLinkItemIcon" />{" "}
               <span>Doctors</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsMenuOpen(false)}>
+          <DropdownMenuItem
+            onClick={() => {
+              setIsMenuOpen(false);
+              scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
             <Link
               to={`/dashboard/${user?.roles.includes("admin") ? "admin" : "user"}/${user?._id}`}
               className="headerMenuDropdownLinkItem"

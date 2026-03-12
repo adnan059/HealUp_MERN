@@ -44,7 +44,7 @@ const SortingDoctors = ({ sort, setSearchParams }: ISortingDoctorsProps) => {
         <SelectTrigger className="selectTrigger">
           <SelectValue placeholder="Sort Doctors" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="border border-indigo-600">
           <SelectGroup>
             <SelectLabel>Sort Doctors</SelectLabel>
 

@@ -16,7 +16,11 @@ const Header = () => {
   return (
     <header>
       <div className="headerContainer">
-        <Link to={"/"} className="logo">
+        <Link
+          to={"/"}
+          onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
+          className="logo"
+        >
           <h1>
             Heal<span>Up</span>
           </h1>

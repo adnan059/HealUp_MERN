@@ -407,7 +407,7 @@ const AdminDashboardTable = () => {
       {/* View Doctor Modal */}
       <Dialog open={!!viewDoctor} onOpenChange={() => setViewDoctor(null)}>
         <DialogContent>
-          <DialogTitle>Doctor Details</DialogTitle>
+          <DialogTitle className="text-indigo-600">Doctor Details</DialogTitle>
 
           <DoctorDetailsDialogContent viewDoctor={viewDoctor} />
         </DialogContent>

@@ -141,7 +141,7 @@ const App = () => {
           </TooltipProvider>
         </AuthProvider>
       </BrowserRouter>
-      <Toaster position="top-center" />
+      <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 };

@@ -102,15 +102,17 @@ const CreateDoctorProfile = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="createDoctorForm">
           {/* Specialty */}
           <div>
-            <Label>Specialty</Label>
+            <Label className="formLabel">Specialty</Label>
             <select
               {...register("specialty", { required: "Specialty is required" })}
               className="w-full border rounded-md p-2 mt-1"
             >
-              <option value="">Select Specialty</option>
+              <option selected disabled value="">
+                Select Specialty
+              </option>
               {specialties.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {s.toUpperCase()}
                 </option>
               ))}
             </select>
@@ -121,7 +123,7 @@ const CreateDoctorProfile = () => {
 
           {/* Degree */}
           <div>
-            <Label>Degree</Label>
+            <Label className="formLabel">Degree</Label>
             <Input
               {...register("degree", {
                 required: "Degree is required",
@@ -138,7 +140,7 @@ const CreateDoctorProfile = () => {
 
           {/* Experience */}
           <div>
-            <Label>Experience (years)</Label>
+            <Label className="formLabel">Experience (years)</Label>
             <Input
               type="number"
               {...register("experience", {
@@ -159,7 +161,7 @@ const CreateDoctorProfile = () => {
 
           {/* Fees */}
           <div>
-            <Label>Consultation Fees</Label>
+            <Label className="formLabel">Consultation Fees</Label>
             <Input
               type="number"
               {...register("fees", {
@@ -178,13 +180,13 @@ const CreateDoctorProfile = () => {
 
           {/* Address */}
           <div>
-            <Label>Your Address</Label>
+            <Label className="formLabel">Your Address</Label>
             <Input {...register("address")} />
           </div>
 
           {/* About */}
           <div>
-            <Label>About</Label>
+            <Label className="formLabel">About</Label>
             <Textarea
               {...register("about", {
                 required: "About is required",
@@ -202,7 +204,7 @@ const CreateDoctorProfile = () => {
           {/* Working Days */}
           <div>
             <div className="flex items-center gap-2">
-              <Label>Working Days</Label>
+              <Label className="formLabel">Working Days</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info
@@ -222,7 +224,7 @@ const CreateDoctorProfile = () => {
                   type="button"
                   key={day.value}
                   onClick={() => toggleDay(day.value)}
-                  className={`px-3 py-1 rounded border transition ${
+                  className={`px-3 py-1 rounded border border-indigo-600 transition ${
                     selectedDays.includes(day.value)
                       ? "bg-indigo-600 text-white"
                       : ""
@@ -250,7 +252,7 @@ const CreateDoctorProfile = () => {
           {/* Slot Duration */}
           <div>
             <div className="flex items-center gap-2">
-              <Label>Slot Duration</Label>
+              <Label className="formLabel">Slot Duration</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info
@@ -283,7 +285,11 @@ const CreateDoctorProfile = () => {
             )}
           </div>
 
-          <Button type="submit" disabled={isPending} className="w-full">
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-indigo-600"
+          >
             {isPending ? "Creating..." : "Create Doctor Profile"}
           </Button>
         </form>

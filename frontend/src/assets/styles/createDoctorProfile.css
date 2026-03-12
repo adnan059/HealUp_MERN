@@ -3,7 +3,7 @@
 }
 
 .createDoctorProfile .sectionContainer > h2 {
-  @apply text-2xl font-semibold mb-16 text-center;
+  @apply text-2xl font-semibold mb-16 text-center text-indigo-600;
 }
 
 .createDoctorForm {
@@ -12,4 +12,14 @@
 
 .createDoctorForm > div {
   @apply space-y-3;
+}
+
+.createDoctorForm .formLabel {
+  @apply text-base font-medium;
+}
+
+.createDoctorForm > div > input,
+.createDoctorForm > div > textarea,
+.createDoctorForm > div > select {
+  @apply border border-indigo-600;
 }
