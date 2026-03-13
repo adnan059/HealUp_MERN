@@ -15,7 +15,6 @@ const DoctorSpecializations = ({
   selectedSpecialty,
   setSearchParams,
 }: IDoctorSpecializationProps) => {
-  console.log(selectedSpecialty);
   const handleSelectSpecialty = (value: DoctorSpecialties) => {
     setSearchParams((prev) => {
       const currentSpecialty = prev.get("specialty");

@@ -1,16 +1,12 @@
 import { Request } from "express";
 
-// ─── Token Cache ─────────────────────────────────────────────────────────────
-// Tokens are cached with an expiry timestamp to avoid re-fetching on every
-// payment request. We use a 55-minute buffer (tokens typically last 60 min).
-
 interface TokenCache {
   token: string;
   store_id: string;
-  expiresAt: number; // epoch ms
+  expiresAt: number;
 }
 
-const TOKEN_TTL_MS = 55 * 60 * 1000; // 55 minutes
+const TOKEN_TTL_MS = 55 * 60 * 1000;
 
 let tokenCache: TokenCache | null = null;
 
@@ -18,11 +14,6 @@ const isCacheValid = (): boolean => {
   return !!tokenCache && Date.now() < tokenCache.expiresAt;
 };
 
-// ─── Get Token ────────────────────────────────────────────────────────────────
-/**
- * Fetches a ShurjoPay token and store_id.
- * Returns cached values if still valid, otherwise fetches a fresh token.
- */
 export const getToken = async (): Promise<{
   token: string;
   store_id: string;
@@ -66,20 +57,10 @@ export const getToken = async (): Promise<{
   return { token: tokenCache.token, store_id: tokenCache.store_id };
 };
 
-// ─── Invalidate Token Cache ───────────────────────────────────────────────────
-/**
- * Call this if you ever get a 401/403 from ShurjoPay mid-flow,
- * so the next request forces a fresh token fetch.
- */
 export const invalidateTokenCache = (): void => {
   tokenCache = null;
 };
 
-// ─── Create Payment ───────────────────────────────────────────────────────────
-/**
- * Initiates a new ShurjoPay payment for a given appointment.
- * Returns the full ShurjoPay response including checkout_url.
- */
 export const createPayment = async (
   appointmentId: string,
   amount: number,
@@ -95,10 +76,10 @@ export const createPayment = async (
     amount,
     order_id: appointmentId,
     currency: "BDT",
-    // Falls back to a sandbox-safe IP if req.ip is unavailable
+
     client_ip: req.ip || "127.0.0.1",
     return_url: `${process.env.BACKEND_URL}/appointments/payment-callback`,
-    // Must exactly match the route path defined in App.tsx
+
     cancel_url: `${process.env.FRONTEND_URL}/payment/payment-cancelled`,
     customer_name: user.name || "N/A",
     customer_email: user.email || "test@example.com",
@@ -108,7 +89,6 @@ export const createPayment = async (
     customer_post_code: user.postCode || "1212",
   };
 
-  // ShurjoPay requires form-urlencoded body for this endpoint
   const formBody = new URLSearchParams(payload as any);
 
   const res = await fetch(`${process.env.SP_ENDPOINT}/api/secret-pay`, {
@@ -138,11 +118,6 @@ export const createPayment = async (
   return data;
 };
 
-// ─── Verify Payment ───────────────────────────────────────────────────────────
-/**
- * Verifies a ShurjoPay payment after the callback is received.
- * Returns the array of payment info objects from ShurjoPay.
- */
 export const verifyPayment = async (order_id: string) => {
   if (!order_id) {
     throw new Error("order_id is required for payment verification");
@@ -174,5 +149,5 @@ export const verifyPayment = async (order_id: string) => {
     );
   }
 
-  return data; // array of payment info objects
+  return data;
 };

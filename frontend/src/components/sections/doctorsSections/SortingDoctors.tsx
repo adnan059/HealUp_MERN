@@ -36,7 +36,6 @@ const SortingDoctors = ({ sort, setSearchParams }: ISortingDoctorsProps) => {
     });
   };
 
-  console.log(sort);
   return (
     <div className="selectDoctorSorting">
       <p>Sort Doctors</p>

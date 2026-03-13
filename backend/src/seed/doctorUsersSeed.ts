@@ -100,7 +100,7 @@ const generateDoctorUsers = async (count: number) => {
     }
 
     await session.commitTransaction();
-    console.log(`🔥 ${count} doctor-users created successfully`);
+
     process.exit(0);
   } catch (error) {
     if (session.inTransaction()) {
@@ -115,7 +115,6 @@ const generateDoctorUsers = async (count: number) => {
 
 const seed = async () => {
   await mongoose.connect(DB_URL);
-  console.log("✅ Connected to DB");
 
   const count = Number(process.argv[2]) || 10;
 

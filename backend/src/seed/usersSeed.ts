@@ -38,7 +38,6 @@ const seedUsers = async () => {
     await User.insertMany(users, { ordered: false });
     process.exit(0);
   } catch (error) {
-    console.log("seeding error: ", error);
     process.exit(1);
   }
 };

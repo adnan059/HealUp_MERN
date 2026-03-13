@@ -27,8 +27,6 @@ const Register = () => {
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<LoginFormValuesType> = async (formData) => {
-    console.log("Submitted:", formData);
-
     mutate(formData, {
       onSuccess: async () => {
         await refetchUser();

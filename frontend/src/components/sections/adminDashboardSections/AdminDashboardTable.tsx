@@ -13,11 +13,6 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 
-// FIX: SortingState, Updater, and onSortingChange are removed entirely.
-// We no longer let TanStack manage sort state — we handle it 100% manually
-// via URL params. TanStack's 3-state cycle (asc→desc→unsorted) was causing
-// desync between its internal state machine and our URL-derived sorting const.
-
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -46,8 +41,6 @@ import Loader from "@/components/shared/Loader";
 
 import DoctorDetailsDialogContent from "./DoctorDetailsDialogContent";
 
-// FIX: The set of columns that are actually sortable on the backend.
-// Columns not in this set (SL, Actions) will not respond to header clicks.
 const SORTABLE_COLUMNS = new Set([
   "name",
   "email",
@@ -60,7 +53,6 @@ const SORTABLE_COLUMNS = new Set([
 const AdminDashboardTable = () => {
   const { get, set } = useTableUrlState();
 
-  // URL-based state — single source of truth for everything
   const page = Number(get("page", 1));
   const limit = Number(get("limit", 10));
   const sortBy = get("sortBy", "createdAt");
@@ -71,29 +63,19 @@ const AdminDashboardTable = () => {
   const isApproved = get("isApproved", "all");
   const search = get("search", "");
 
-  // Local UI state only — nothing sort/filter related
   const [viewDoctor, setViewDoctor] =
     useState<IDoctorDetailsWithSchedule | null>(null);
   const [deleteDoctorId, setDeleteDoctorId] = useState<string | null>(null);
 
-  console.log(viewDoctor);
-
-  // FIX: handleColumnSort replaces TanStack's onSortingChange entirely.
-  // Logic: clicking the active column toggles asc↔desc (2-state, no unsorted).
-  // Clicking a different column starts fresh at asc.
-  // This is the real-world pattern used in production tables where sort is server-side.
   const handleColumnSort = useCallback(
     (columnId: string) => {
-      console.log("columnId clicked:", columnId); // ADD THIS
       if (!SORTABLE_COLUMNS.has(columnId)) return;
       if (columnId === sortBy) {
-        // Same column: toggle direction
         set({
           sortOrder: sortOrder === "asc" ? "desc" : "asc",
           page: "1",
         });
       } else {
-        // Different column: start at asc
         set({
           sortBy: columnId,
           sortOrder: "asc",
@@ -151,8 +133,6 @@ const AdminDashboardTable = () => {
     search: search || undefined,
   });
 
-  console.log(data);
-
   const approvalMutation = useUpdateDoctorApproval();
   const deleteMutation = useDeleteDoctor();
 
@@ -178,9 +158,6 @@ const AdminDashboardTable = () => {
     handleFilterChange("specialty", newSpecialties);
   };
 
-  // FIX: Columns no longer need accessorKey for sort id purposes —
-  // we handle sort clicks manually via handleColumnSort.
-  // Each column has an explicit 'id' field so we can identify it in the header click.
   const columns = useMemo<ColumnDef<IDoctorDetailsWithSchedule>[]>(
     () => [
       {
@@ -264,10 +241,6 @@ const AdminDashboardTable = () => {
     [page, limit],
   );
 
-  // FIX: Table no longer receives sorting state or onSortingChange.
-  // TanStack Table is used ONLY for rendering (getCoreRowModel, flexRender).
-  // Sort state lives entirely in the URL. This is the correct pattern for
-  // server-side sorting — you don't want TanStack touching sort at all.
   const table = useReactTable({
     data: data?.data ?? [],
     columns,
@@ -348,10 +321,6 @@ const AdminDashboardTable = () => {
                   return (
                     <th
                       key={header.id}
-                      // FIX: onClick now calls our manual handleColumnSort,
-                      // not TanStack's getToggleSortingHandler(). This gives us
-                      // full control: only 2 states (asc/desc), no unsorted state,
-                      // no internal TanStack state machine to fight against.
                       onClick={() => handleColumnSort(columnId)}
                       className={`${
                         isSortable ? "cursor-pointer" : "cursor-default"

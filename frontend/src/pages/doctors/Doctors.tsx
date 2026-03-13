@@ -30,8 +30,6 @@ const Doctors = () => {
     page,
   });
 
-  //console.log(data);
-
   return (
     <section className="doctors">
       <div className="sectionContainer">

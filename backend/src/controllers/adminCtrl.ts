@@ -70,7 +70,6 @@ export const getAllDoctorsForAdminCtrl = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log("Query received:", req.query);
   try {
     const {
       page = "1",
@@ -101,11 +100,6 @@ export const getAllDoctorsForAdminCtrl = async (
       matchStage.isApproved = isApproved === "true";
     }
 
-    // FIX: Instead of sorting on 'user.name'/'user.email' (dot-notation on
-    // a $lookup-joined subdocument which MongoDB can silently ignore),
-    // we promote those fields to the top level with $addFields first,
-    // then sort on the flat field names '_userName' and '_userEmail'.
-    // Underscore prefix marks them as temporary pipeline fields.
     const sortFieldMap: Record<string, string> = {
       name: "_userName",
       email: "_userEmail",
@@ -148,10 +142,6 @@ export const getAllDoctorsForAdminCtrl = async (
       });
     }
 
-    // FIX: $addFields promotes user.name and user.email to flat top-level
-    // fields before $sort runs. MongoDB $sort on 'user.name' (dot-notation
-    // into a joined subdocument) can be silently ignored in some MongoDB
-    // versions. Sorting on a flat top-level field always works reliably.
     pipeline.push({
       $addFields: {
         _userName: "$user.name",
@@ -159,7 +149,6 @@ export const getAllDoctorsForAdminCtrl = async (
       },
     });
 
-    // Now $sort runs on flat fields — guaranteed to work
     pipeline.push({
       $sort: { [resolvedSortField]: sortDirection },
     });
@@ -183,8 +172,7 @@ export const getAllDoctorsForAdminCtrl = async (
               updatedAt: 1,
               slotDuration: "$schedule.slotDuration",
               workingDays: "$schedule.workingDays",
-              // FIX: _userName and _userEmail are temporary pipeline fields —
-              // they are NOT included in $project so they never reach the client
+
               userId: {
                 _id: "$user._id",
                 name: "$user.name",

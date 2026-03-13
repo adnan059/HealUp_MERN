@@ -22,14 +22,11 @@ const doctorScheduleSchema = new Schema<IDoctorSchedule>(
         validator: function (days: number[]) {
           if (!Array.isArray(days)) return false;
 
-          // Must select between 2 and 6 days
           if (days.length < 2 || days.length > 6) return false;
 
-          // No duplicate days
           const uniqueDays = new Set(days);
           if (uniqueDays.size !== days.length) return false;
 
-          // Values must be integers between 0 and 6
           return days.every(
             (day) => Number.isInteger(day) && day >= 0 && day <= 6,
           );

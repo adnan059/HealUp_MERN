@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/incompatible-library */
-// frontend/src/pages/dashboard/user/PatientAppointmentsTable.tsx
 
 import { useMemo } from "react";
 import {
@@ -14,8 +13,6 @@ import { formatDate, formatTime } from "@/lib/utils";
 import Loader from "@/components/shared/Loader";
 import { useGetAppointmentsAsPatient } from "@/hooks/useDashboard";
 
-// ── status badge ────────────────────────────────────────────────────────────
-
 const StatusBadge = ({ status }: { status: IPatientAppointment["status"] }) => {
   const styles = {
     confirmed: "bg-green-600 text-white",
@@ -28,8 +25,6 @@ const StatusBadge = ({ status }: { status: IPatientAppointment["status"] }) => {
     </span>
   );
 };
-
-// ── payment status badge ────────────────────────────────────────────────────
 
 const PaymentBadge = ({
   status,
@@ -48,8 +43,6 @@ const PaymentBadge = ({
     </span>
   );
 };
-
-// ── component ───────────────────────────────────────────────────────────────
 
 const PatientAppointmentsTable = () => {
   const { data, isPending, isError } = useGetAppointmentsAsPatient();

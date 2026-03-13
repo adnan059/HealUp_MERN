@@ -56,15 +56,11 @@ export const paymentCallback = async (
   try {
     const order_id = req.query.order_id as string;
 
-    console.log("order_id:", order_id);
-
     if (!order_id) {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
     }
 
     const verification = await verifyPayment(order_id);
-
-    console.log("verification:", verification);
 
     if (!verification || !verification.length) {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
@@ -72,13 +68,9 @@ export const paymentCallback = async (
 
     const paymentInfo = verification[0];
 
-    console.log("paymentInfo:", paymentInfo);
-
     const appointment = await Appointment.findOne({
       paymentTransactionId: order_id,
     });
-
-    console.log("appointment:", appointment?._id);
 
     if (!appointment) {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
@@ -105,10 +97,6 @@ export const paymentCallback = async (
       );
     }
 
-    /**
-     * IMPORTANT:
-     * Sandbox success conditions
-     */
     const isPaymentSuccessful =
       paymentInfo.bank_status === "Success" ||
       paymentInfo.sp_message === "Success" ||
@@ -119,14 +107,10 @@ export const paymentCallback = async (
       appointment.status = "confirmed";
       await appointment.save();
 
-      console.log("Payment confirmed for:", appointment._id);
-
       return res.redirect(
         `${process.env.FRONTEND_URL}/payment/payment-success?txn_id=${order_id}`,
       );
     }
-
-    console.log("Payment failed condition hit");
 
     return res.redirect(
       `${process.env.FRONTEND_URL}/payment/payment-failed?txn_id=${order_id}`,
@@ -136,10 +120,6 @@ export const paymentCallback = async (
   }
 };
 
-// GET PAYMENT STATUS
-// Called by the frontend payment result pages to verify the result is real.
-// Matches by paymentTransactionId AND patientId so users can only query
-// their own appointments.
 export const getPaymentStatus = async (
   req: AuthenticatedRequest,
   res: Response,

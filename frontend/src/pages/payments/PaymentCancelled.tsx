@@ -3,7 +3,6 @@ import Loader from "@/components/shared/Loader";
 import { Link } from "react-router-dom";
 
 const PaymentCancelled = () => {
-  // cancelled payments also stay as "unpaid" in the DB
   const { isLoading } = usePaymentStatus("unpaid");
 
   if (isLoading) return <Loader />;

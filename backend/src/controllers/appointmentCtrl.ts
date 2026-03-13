@@ -138,10 +138,6 @@ export const createAppointment = async (
       paymentAmount,
     } = req.body;
 
-    // console.log("patient Id ==>", patientId.toString());
-    // console.log("req.user._id ==>", req.user?._id.toString());
-
-    //console.log("req.user ==>", req.user);
     if (patientId.toString() !== req.user?._id.toString()) {
       return next(
         createError(
@@ -203,7 +199,6 @@ export const createAppointment = async (
 
     res.status(201).json(appointment);
   } catch (error: any) {
-    console.log("create appointment error ==>", error);
     if (error.code === 11000) {
       return next(createError(409, "Slot already booked"));
     }

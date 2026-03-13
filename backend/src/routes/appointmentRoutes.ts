@@ -36,7 +36,6 @@ router.post("/start-payment", verifyToken, startPayment);
 
 router.get("/payment-callback", paymentCallback);
 
-// Protected: only the patient who made the appointment can check its status
 router.get("/payment-status", verifyToken, getPaymentStatus);
 
 export default router;

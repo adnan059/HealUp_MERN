@@ -7,7 +7,6 @@ import { getAvatatFallbackText } from "@/lib/utils";
 const Header = () => {
   const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
-  // console.log(user);
 
   const handleLogout = async () => {
     await logout();

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/incompatible-library */
-// frontend/src/pages/dashboard/user/DoctorAppointmentsTable.tsx
 
 import { useMemo } from "react";
 import {
@@ -18,14 +17,9 @@ import {
 import Loader from "@/components/shared/Loader";
 import { useGetAppointmentsAsDoctor } from "@/hooks/useDashboard";
 
-// ── component ───────────────────────────────────────────────────────────────
-
 const DoctorAppointmentsTable = () => {
   const { data, isPending, isError } = useGetAppointmentsAsDoctor();
-  console.log(data);
 
-  // Compute Dhaka "now" once per render — not inside columns/rows
-  // so every row in the same render uses the exact same reference point.
   const { todayStr, nowMinute } = useMemo(() => getDhakaNow(), []);
 
   const columns = useMemo<ColumnDef<IDoctorAppointment>[]>(
@@ -58,7 +52,7 @@ const DoctorAppointmentsTable = () => {
       {
         id: "status",
         header: "Status",
-        // always "confirmed" — backend filters for confirmed only
+
         cell: () => (
           <span className="bg-green-600 text-white px-3 py-1 rounded text-sm capitalize">
             confirmed
@@ -68,7 +62,7 @@ const DoctorAppointmentsTable = () => {
       {
         id: "paymentStatus",
         header: "Payment Status",
-        // always "paid" — backend filters for paid only
+
         cell: () => (
           <span className="bg-green-600 text-white px-3 py-1 rounded text-sm capitalize">
             paid
@@ -159,8 +153,6 @@ const DoctorAppointmentsTable = () => {
             return (
               <tr
                 key={row.id}
-                // past rows: muted gray background
-                // future rows: subtle green tint to indicate upcoming
                 className={`tableRow ${
                   isPast ? "bg-amber-200" : "bg-green-200"
                 }`}

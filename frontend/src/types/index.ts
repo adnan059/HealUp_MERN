@@ -61,7 +61,6 @@ export interface IAllDoctors {
 
 export type FeaturedDoctorsType = IDoctor[];
 
-// same as IDoctor in chatgpt
 export interface IDoctorDetailsWithSchedule {
   _id: string;
   doctorId: string;

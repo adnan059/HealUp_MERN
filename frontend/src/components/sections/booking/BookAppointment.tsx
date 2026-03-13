@@ -32,7 +32,6 @@ const BookAppointment = ({
 }: {
   doctorDetails: IDoctorDetailsWithSchedule;
 }) => {
-  // console.log(doctorDetails);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<SlotType | null>(null);
   const [symptoms, setSymptoms] = useState("");
@@ -92,8 +91,6 @@ const BookAppointment = ({
     });
   };
 
-  console.log("workingDays", workingDays);
-  console.log("Slots", slots);
   if (isPending_workingDays) {
     return <Loader />;
   }
