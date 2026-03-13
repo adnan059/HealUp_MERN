@@ -1,0 +1,15 @@
+.patientDashboardTableContainer {
+  @apply mt-4 overflow-x-auto;
+}
+
+.patientDashboardTableContainer .tableHeaderCells {
+  @apply p-2 border border-indigo-600 text-white select-none;
+}
+
+.patientDashboardTableContainer .tableRow {
+  @apply border-b border-indigo-600;
+}
+
+.patientDashboardTableContainer .tableBodyCells {
+  @apply p-2 border text-center border-indigo-600 capitalize;
+}

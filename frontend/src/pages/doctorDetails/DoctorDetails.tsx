@@ -4,6 +4,7 @@ import { useGetADoctorById } from "@/hooks/useDoctors";
 
 import { Award, Coins, GraduationCap, Stethoscope } from "lucide-react";
 import { useParams } from "react-router-dom";
+import fallbackDoctorAvatar from "@/assets/images/doctor.png";
 
 const DoctorDetails = () => {
   const { id } = useParams() as {
@@ -21,13 +22,7 @@ const DoctorDetails = () => {
       <div className="sectionContainer">
         <div className="doctorInfo">
           <div className="doctorImage">
-            <img
-              src={
-                data?.userId?.avatar ||
-                "https://static.vecteezy.com/system/resources/previews/015/412/022/non_2x/doctor-round-avatar-medicine-flat-avatar-with-male-doctor-medical-clinic-team-round-icon-medical-collection-illustration-vector.jpg"
-              }
-              alt=""
-            />
+            <img src={data?.userId?.avatar || fallbackDoctorAvatar} alt="" />
           </div>
           <div className="doctorTextData">
             <h2>Dr. {data?.userId?.name}</h2>

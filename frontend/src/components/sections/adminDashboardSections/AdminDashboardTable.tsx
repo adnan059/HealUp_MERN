@@ -275,21 +275,21 @@ const AdminDashboardTable = () => {
   });
 
   return (
-    <div className="mt-16">
+    <div className="adminDashboardTableContainer">
       {/* Filters */}
-      <div className="flex gap-4 mb-4 flex-wrap">
+      <div className="adminDashboardTableUpperPart">
         <Input
           placeholder="Search by email"
-          className="border border-indigo-600"
+          className="searchBox"
           defaultValue={search}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             handleSearch(e.target.value)
           }
         />
 
-        <div className="flex gap-2 flex-wrap items-center bg-indigo-600 px-4 rounded-md">
+        <div className="selectSpecialty">
           {specialtiesList.map((sp) => (
-            <label key={sp} className="flex items-center gap-1 text-white">
+            <label key={sp}>
               <input
                 type="checkbox"
                 checked={selectedSpecialties.includes(sp)}
@@ -305,10 +305,10 @@ const AdminDashboardTable = () => {
           value={isApproved || "all"}
           onValueChange={(val) => handleFilterChange("isApproved", val)}
         >
-          <SelectTrigger className="w-37.5 border border-indigo-600">
+          <SelectTrigger className="selectStatusTrigger">
             <SelectValue placeholder="Filter by approval" />
           </SelectTrigger>
-          <SelectContent className="border border-indigo-600">
+          <SelectContent className="selectStatusList">
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="true">Confirmed</SelectItem>
             <SelectItem value="false">Pending</SelectItem>
@@ -319,10 +319,10 @@ const AdminDashboardTable = () => {
           value={String(limit)}
           onValueChange={(val) => handleFilterChange("limit", val)}
         >
-          <SelectTrigger className="w-20 border border-indigo-600">
+          <SelectTrigger className="selectLimitTrigger">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="border border-indigo-600">
+          <SelectContent className="selectLimitList">
             {[5, 10, 20, 50].map((n) => (
               <SelectItem key={n} value={String(n)}>
                 {n}
@@ -336,8 +336,8 @@ const AdminDashboardTable = () => {
       {isPending ? (
         <Loader />
       ) : (
-        <table className="w-full">
-          <thead className="bg-indigo-600">
+        <table className="adminDashboardTable">
+          <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -353,7 +353,7 @@ const AdminDashboardTable = () => {
                       // full control: only 2 states (asc/desc), no unsorted state,
                       // no internal TanStack state machine to fight against.
                       onClick={() => handleColumnSort(columnId)}
-                      className={`p-2 border select-none text-white border-indigo-600 ${
+                      className={`${
                         isSortable ? "cursor-pointer" : "cursor-default"
                       }`}
                     >
@@ -371,12 +371,9 @@ const AdminDashboardTable = () => {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-b border-indigo-600">
+              <tr key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="p-2 border text-center border-indigo-600"
-                  >
+                  <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -387,17 +384,17 @@ const AdminDashboardTable = () => {
       )}
 
       {/* Pagination */}
-      <div className="flex gap-2 mt-4">
+      <div className="paginationButtonContainer">
         <Button
           disabled={page <= 1}
-          className="bg-indigo-600 hover:bg-indigo-700"
+          className="paginationButton"
           onClick={() => set({ page: String(page - 1) })}
         >
           Previous
         </Button>
         <Button
           disabled={page >= (data?.meta.totalPages ?? 1)}
-          className="bg-indigo-600 hover:bg-indigo-700"
+          className="paginationButton"
           onClick={() => set({ page: String(page + 1) })}
         >
           Next

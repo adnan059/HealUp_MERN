@@ -2,17 +2,15 @@ import type { IDoctor } from "@/types";
 import { Award, GraduationCap } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import fallbackDoctorAvatar from "@/assets/images/doctor.png";
 
 const DoctorCard = ({ doctor }: { doctor: IDoctor }) => {
   return (
     <Link to={`/doctor/${doctor?._id}`} key={doctor._id} className="doctorCard">
       <div className="doctorCardImage">
         <img
-          src={
-            doctor?.userId?.avatar ||
-            "https://static.vecteezy.com/system/resources/previews/015/412/022/non_2x/doctor-round-avatar-medicine-flat-avatar-with-male-doctor-medical-clinic-team-round-icon-medical-collection-illustration-vector.jpg"
-          }
-          alt=""
+          src={doctor?.userId?.avatar || fallbackDoctorAvatar}
+          alt={doctor.userId?.name}
         />
       </div>
       <div className="doctorInfo">

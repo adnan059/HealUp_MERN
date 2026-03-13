@@ -48,7 +48,7 @@ const SelectDoctorSpecialization = ({
         <SelectTrigger className="selectTrigger">
           <SelectValue placeholder="Select Specialization" />
         </SelectTrigger>
-        <SelectContent className="border border-indigo-600">
+        <SelectContent className="specializationList">
           <SelectGroup>
             <SelectLabel>Select Specialization</SelectLabel>
             <SelectItem value={"all"}>ALL</SelectItem>

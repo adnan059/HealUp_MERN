@@ -9,3 +9,7 @@
 .selectDoctorSpecialization .selectTrigger {
   @apply w-full max-w-48 border border-indigo-600;
 }
+
+.selectDoctorSpecialization .specializationList {
+  @apply border border-indigo-600;
+}

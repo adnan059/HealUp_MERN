@@ -23,3 +23,23 @@
 .createDoctorForm > div > select {
   @apply border border-indigo-600;
 }
+
+.createDoctorForm > div > select {
+  @apply w-full border rounded-md p-2 mt-1;
+}
+
+.createDoctorForm .singleWorkingDay {
+  @apply px-3 py-1 rounded border border-indigo-600 transition;
+}
+
+.createDoctorForm .tooltipInfo {
+  @apply text-muted-foreground cursor-pointer;
+}
+
+.createDoctorForm .submitButton {
+  @apply w-full bg-indigo-600 hover:bg-indigo-500;
+}
+
+.createDoctorFormErrorMessage {
+  @apply text-red-500 text-sm;
+}

@@ -130,16 +130,13 @@ const DoctorAppointmentsTable = () => {
   }
 
   return (
-    <div className="mt-4 overflow-x-auto">
+    <div className="doctorDashboardTableContainer">
       <table className="w-full">
         <thead className="bg-indigo-600">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="p-2 border border-indigo-600 text-white select-none"
-                >
+                <th key={header.id} className="tableHeaderCells">
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext(),
@@ -164,15 +161,12 @@ const DoctorAppointmentsTable = () => {
                 key={row.id}
                 // past rows: muted gray background
                 // future rows: subtle green tint to indicate upcoming
-                className={`border-b border-indigo-600 ${
+                className={`tableRow ${
                   isPast ? "bg-amber-200" : "bg-green-200"
                 }`}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="p-2 border text-center border-indigo-600"
-                  >
+                  <td key={cell.id} className="tableBodyCells">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -183,13 +177,13 @@ const DoctorAppointmentsTable = () => {
       </table>
 
       {/* Legend */}
-      <div className="flex items-center gap-6 mt-3 text-sm text-gray-500">
-        <span className="flex items-center gap-2">
-          <span className="inline-block w-4 h-4 rounded bg-green-200 border border-gray-300" />
+      <div className="legend">
+        <span className="legendPart">
+          <span className=" bg-green-200 " />
           Upcoming
         </span>
-        <span className="flex items-center gap-2">
-          <span className="inline-block w-4 h-4 rounded bg-amber-200 border border-gray-300" />
+        <span className="legendPart">
+          <span className=" bg-amber-200" />
           Past
         </span>
       </div>

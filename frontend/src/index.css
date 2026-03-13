@@ -17,6 +17,9 @@
 @import "./assets/styles/adminDashboardTable.css";
 @import "./assets/styles/payment.css";
 @import "./assets/styles/userDashboard.css";
+@import "./assets/styles/patientDashboardTable";
+@import "./assets/styles/doctorDashboardTable.css";
+@import "./assets/styles/avatarUploader.css";
 /* --------------------------- *** --------------------------- */
 @custom-variant dark (&: is(.dark *));
 

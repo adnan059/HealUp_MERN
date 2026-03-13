@@ -100,7 +100,7 @@ const BookAppointment = ({
 
   return (
     <div className="bookAppointment">
-      <h2 className="text-indigo-600">Book Appointment</h2>
+      <h2>Book Appointment</h2>
 
       <div className="bookAppointmentContainer">
         {/* Symptoms */}
@@ -139,7 +139,7 @@ const BookAppointment = ({
           <div className="">
             <Label>Select a slot</Label>
             {isPending_slot && <p>Loading Slots ...</p>}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="timeSlotContainer">
               {slots?.map((slot) => (
                 <button
                   key={slot.startMinute}
@@ -160,11 +160,11 @@ const BookAppointment = ({
         <Button
           disabled={isPending_createAppointment || processing}
           onClick={handleBookAppointment}
-          className="disabled:bg-indigo-300"
+          className="submitButton"
         >
           {processing || isPending_createAppointment
             ? "Booking Appointment ..."
-            : "Book Appointment & Make Payment"}
+            : `Book Appointment & Make Payment`}
         </Button>
       </div>
     </div>

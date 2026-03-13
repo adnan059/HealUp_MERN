@@ -5,3 +5,7 @@
 .selectDoctorSorting .selectTrigger {
   @apply w-full max-w-48 border border-indigo-600;
 }
+
+.selectDoctorSorting .sortingList {
+  @apply border border-indigo-600;
+}

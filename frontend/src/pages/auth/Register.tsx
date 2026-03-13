@@ -40,9 +40,6 @@ const Register = () => {
         handleAxiosError(error);
       },
     });
-
-    // later:
-    // await axios.post("/auth/register", data)
   };
   return (
     <section className="register authSection" id="register">
@@ -70,7 +67,7 @@ const Register = () => {
                 })}
               />
               {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
+                <p className="authFormErrorMessage">{errors.name.message}</p>
               )}
             </div>
 
@@ -90,7 +87,7 @@ const Register = () => {
                 })}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+                <p className="authFormErrorMessage">{errors.email.message}</p>
               )}
             </div>
 
@@ -110,17 +107,13 @@ const Register = () => {
                 })}
               />
               {errors.password && (
-                <p className="text-sm text-red-500">
+                <p className="authFormErrorMessage">
                   {errors.password.message}
                 </p>
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-indigo-600"
-              disabled={isPending}
-            >
+            <Button type="submit" disabled={isPending}>
               {isPending ? "Registering..." : "Register"}
             </Button>
           </form>

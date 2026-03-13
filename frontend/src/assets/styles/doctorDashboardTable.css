@@ -1,0 +1,27 @@
+.doctorDashboardTableContainer {
+  @apply mt-4 overflow-x-auto;
+}
+
+.doctorDashboardTableContainer .tableHeaderCells {
+  @apply p-2 border border-indigo-600 text-white select-none;
+}
+
+.doctorDashboardTableContainer .tableRow {
+  @apply border-b border-indigo-600;
+}
+
+.doctorDashboardTableContainer .tableBodyCells {
+  @apply p-2 border text-center border-indigo-600 capitalize;
+}
+
+.doctorDashboardTableContainer .legend {
+  @apply flex items-center gap-6 mt-3 text-sm text-gray-500;
+}
+
+.doctorDashboardTableContainer .legend .legendPart {
+  @apply flex items-center gap-2;
+}
+
+.doctorDashboardTableContainer .legend .legendPart span {
+  @apply inline-block w-4 h-4 rounded border border-gray-300;
+}

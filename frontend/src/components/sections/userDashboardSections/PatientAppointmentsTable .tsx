@@ -154,16 +154,13 @@ const PatientAppointmentsTable = () => {
   }
 
   return (
-    <div className="mt-4 overflow-x-auto">
+    <div className="patientDashboardTableContainer">
       <table className="w-full">
         <thead className="bg-indigo-600">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="p-2 border border-indigo-600 text-white select-none"
-                >
+                <th key={header.id} className="tableHeaderCells">
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext(),
@@ -175,12 +172,9 @@ const PatientAppointmentsTable = () => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="border-b border-indigo-600">
+            <tr key={row.id} className="tableRow">
               {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="p-2 border text-center border-indigo-600"
-                >
+                <td key={cell.id} className="tableBodyCells">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

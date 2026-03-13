@@ -15,8 +15,6 @@ const UserDashboard = () => {
   const isDoctor = user?.roles.includes("doctor");
   const isBoth = isPatient && isDoctor;
 
-  console.log("DOCTOR PROFILE ==> ", doctorProfile);
-
   if (isLoading) return <Loader />;
 
   return (
@@ -57,9 +55,7 @@ const UserDashboard = () => {
         )}
 
         <div className="userDashboardTablesSection mt-16">
-          <h2 className="text-2xl font-semibold text-indigo-600 ">
-            Dashboard Details
-          </h2>
+          <h2 className="userDashboardHeader">Dashboard Details</h2>
           {isPatient && !isDoctor && (
             <>
               <div className="mb-6">
@@ -89,14 +85,14 @@ const UserDashboard = () => {
                 <TabsList className="mb-4">
                   <TabsTrigger
                     value="patient"
-                    className="flex items-center gap-2 text-indigo-600"
+                    className="userDashboardTabsTrigger"
                   >
                     <CalendarDays className="w-4 h-4" />
                     My Appointments
                   </TabsTrigger>
                   <TabsTrigger
                     value="doctor"
-                    className="flex items-center gap-2 text-indigo-600"
+                    className="userDashboardTabsTrigger"
                   >
                     <Stethoscope className="w-4 h-4" />
                     My Patients

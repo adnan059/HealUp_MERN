@@ -2,7 +2,7 @@
 }
 
 .bookAppointment > h2 {
-  @apply text-2xl font-semibold mb-10 text-center;
+  @apply text-2xl font-semibold mb-10 text-center text-indigo-600;
 }
 
 .bookAppointmentContainer {
@@ -24,10 +24,15 @@
 .bookAppointmentContainer .selectDateTrigger {
   @apply border border-indigo-600;
 }
+
+.bookAppointment .timeSlotContainer {
+  @apply grid grid-cols-3 gap-2;
+}
+
 .bookAppointment .slotButton {
   @apply border border-indigo-600 p-2 rounded-lg;
 }
 
-.bookAppointmentContainer > button {
-  @apply bg-indigo-600 mx-auto cursor-pointer hover:bg-indigo-900;
+.bookAppointmentContainer .submitButton {
+  @apply bg-indigo-600 mx-auto cursor-pointer hover:bg-indigo-500 disabled:bg-indigo-300;
 }

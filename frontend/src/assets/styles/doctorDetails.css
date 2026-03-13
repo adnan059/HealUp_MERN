@@ -13,8 +13,11 @@
 .doctorDetails .doctorInfo > div {
   @apply max-w-110 w-full;
 }
+.doctorDetails .doctorInfo .doctorImage {
+  @apply max-w-80 w-full aspect-square rounded-full border-8 border-indigo-300;
+}
 .doctorDetails .doctorInfo .doctorImage img {
-  @apply max-w-80 w-full rounded-full mx-auto;
+  @apply w-full h-full object-cover rounded-full mx-auto;
 }
 
 .doctorDetails .doctorInfo .doctorTextData {

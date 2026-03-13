@@ -105,7 +105,6 @@ const CreateDoctorProfile = () => {
             <Label className="formLabel">Specialty</Label>
             <select
               {...register("specialty", { required: "Specialty is required" })}
-              className="w-full border rounded-md p-2 mt-1"
             >
               <option selected disabled value="">
                 Select Specialty
@@ -117,7 +116,9 @@ const CreateDoctorProfile = () => {
               ))}
             </select>
             {errors.specialty && (
-              <p className="text-red-500 text-sm">{errors.specialty.message}</p>
+              <p className="createDoctorFormErrorMessage">
+                {errors.specialty.message}
+              </p>
             )}
           </div>
 
@@ -134,7 +135,9 @@ const CreateDoctorProfile = () => {
               })}
             />
             {errors.degree && (
-              <p className="text-red-500 text-sm">{errors.degree.message}</p>
+              <p className="createDoctorFormErrorMessage">
+                {errors.degree.message}
+              </p>
             )}
           </div>
 
@@ -153,7 +156,7 @@ const CreateDoctorProfile = () => {
               })}
             />
             {errors.experience && (
-              <p className="text-red-500 text-sm">
+              <p className="createDoctorFormErrorMessage">
                 {errors.experience.message}
               </p>
             )}
@@ -174,7 +177,9 @@ const CreateDoctorProfile = () => {
               })}
             />
             {errors.fees && (
-              <p className="text-red-500 text-sm">{errors.fees.message}</p>
+              <p className="createDoctorFormErrorMessage">
+                {errors.fees.message}
+              </p>
             )}
           </div>
 
@@ -197,7 +202,9 @@ const CreateDoctorProfile = () => {
               })}
             />
             {errors.about && (
-              <p className="text-red-500 text-sm">{errors.about.message}</p>
+              <p className="createDoctorFormErrorMessage">
+                {errors.about.message}
+              </p>
             )}
           </div>
 
@@ -207,10 +214,7 @@ const CreateDoctorProfile = () => {
               <Label className="formLabel">Working Days</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info
-                    size={10}
-                    className="text-muted-foreground cursor-pointer"
-                  />
+                  <Info size={10} className="tooltipInfo" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Select the days you are available to work.</p>
@@ -224,7 +228,7 @@ const CreateDoctorProfile = () => {
                   type="button"
                   key={day.value}
                   onClick={() => toggleDay(day.value)}
-                  className={`px-3 py-1 rounded border border-indigo-600 transition ${
+                  className={`singleWorkingDay ${
                     selectedDays.includes(day.value)
                       ? "bg-indigo-600 text-white"
                       : ""
@@ -243,7 +247,7 @@ const CreateDoctorProfile = () => {
             />
 
             {errors.workingDays && (
-              <p className="text-red-500 text-sm">
+              <p className="createDoctorFormErrorMessage">
                 {errors.workingDays.message as string}
               </p>
             )}
@@ -255,10 +259,7 @@ const CreateDoctorProfile = () => {
               <Label className="formLabel">Slot Duration</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info
-                    size={10}
-                    className="text-muted-foreground cursor-pointer"
-                  />
+                  <Info size={10} className="tooltipInfo" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Time for each patient</p>
@@ -273,23 +274,18 @@ const CreateDoctorProfile = () => {
                 validate: (v) =>
                   [20, 30].includes(v) || "Slot duration must be 20 or 30",
               })}
-              className="w-full border rounded-md p-2 mt-1"
             >
               <option value={20}>20 Minutes</option>
               <option value={30}>30 Minutes</option>
             </select>
             {errors.slotDuration && (
-              <p className="text-red-500 text-sm">
+              <p className="createDoctorFormErrorMessage">
                 {errors.slotDuration.message}
               </p>
             )}
           </div>
 
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-indigo-600"
-          >
+          <Button type="submit" disabled={isPending} className="submitButton">
             {isPending ? "Creating..." : "Create Doctor Profile"}
           </Button>
         </form>

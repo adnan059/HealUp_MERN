@@ -1,3 +1,67 @@
+.adminDashboardTableContainer {
+  @apply mt-16;
+}
+
+.adminDashboardTableUpperPart {
+  @apply flex gap-4 mb-4 flex-wrap;
+}
+
+.adminDashboardTableUpperPart .searchBox {
+  @apply border border-indigo-600;
+}
+
+.adminDashboardTableUpperPart .selectSpecialty {
+  @apply flex gap-2 flex-wrap items-center bg-indigo-600 px-4 rounded-md;
+}
+
+.adminDashboardTableUpperPart .selectSpecialty label {
+  @apply flex items-center gap-1 text-white;
+}
+
+.adminDashboardTableUpperPart .selectStatusTrigger {
+  @apply w-37.5 border border-indigo-600;
+}
+
+.adminDashboardTableUpperPart .selectStatusList {
+  @apply border border-indigo-600;
+}
+
+.adminDashboardTableUpperPart .selectLimitTrigger {
+  @apply w-20 border border-indigo-600;
+}
+
+.adminDashboardTableUpperPart .selectLimitList {
+  @apply border border-indigo-600;
+}
+
+.adminDashboardTable {
+  @apply w-full;
+}
+
+.adminDashboardTable thead {
+  @apply bg-indigo-600;
+}
+
+.adminDashboardTable th {
+  @apply p-2 border select-none text-white border-indigo-600;
+}
+
+.adminDashboardTable tr {
+  @apply border-b border-indigo-600;
+}
+
+.adminDashboardTable td {
+  @apply p-2 border text-center border-indigo-600 capitalize;
+}
+
+.adminDashboardTableContainer .paginationButtonContainer {
+  @apply flex gap-2 mt-4;
+}
+
+.adminDashboardTableContainer .paginationButton {
+  @apply bg-indigo-600 hover:bg-indigo-700;
+}
+
 .viewDoctorDetails {
   @apply space-y-4;
 }
