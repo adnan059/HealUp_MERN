@@ -14,17 +14,38 @@ const validateEnv = () => {
   const requiredVars = ["DB_URL", "FRONTEND_URL", "JWT_SK", "NODE_ENV"];
   const missingVars = requiredVars.filter((key) => !process.env[key]);
   if (missingVars.length > 0) {
-    console.log("Missing environment variables:");
-    missingVars.forEach((key) => console.log(` -${key}`));
-    process.exit(1);
+    console.error("Missing environment variables:");
+    missingVars.forEach((key) => console.error(` - ${key}`));
+    // Don't process.exit in serverless — just warn
+    if (process.env.NODE_ENV !== "production") {
+      process.exit(1);
+    }
   }
 };
 
 validateEnv();
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
 const DB_URL = process.env.DB_URL as string;
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
+
+// ✅ Mongoose connection caching — critical for serverless
+// Without this, every request creates a new DB connection (connection pool exhaustion)
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return; // reuse existing connection
+
+  try {
+    await mongoose.connect(DB_URL);
+    isConnected = true;
+    console.log("Database connected successfully");
+    startCleanupWorker();
+  } catch (error) {
+    console.error("DB connection failed:", error);
+    throw error;
+  }
+};
 
 // app setup
 const app = express();
@@ -37,6 +58,16 @@ app.use(
     credentials: true,
   }),
 );
+
+// ✅ Middleware to connect DB before every request (serverless safe)
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(500).json({ message: "Database connection failed" });
+  }
+});
 
 app.get("/", (req: Request, res: Response) => {
   res.send("working ok");
@@ -60,19 +91,22 @@ app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// server start
-const startServer = async () => {
-  try {
-    await mongoose.connect(DB_URL);
-    console.log("Database connected successfully");
-    startCleanupWorker();
-    app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
-};
+// ✅ Local development only
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    mongoose
+      .connect(DB_URL)
+      .then(() => {
+        console.log("Database connected successfully");
+        startCleanupWorker();
+        console.log(`Server running at http://localhost:${PORT}`);
+      })
+      .catch((err) => {
+        console.error("DB connection failed:", err);
+        process.exit(1);
+      });
+  });
+}
 
-startServer();
+// ✅ Required export for Vercel serverless
+export default app;
