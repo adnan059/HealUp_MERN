@@ -54,3 +54,12 @@ export const loginValidator = [
 
   body("password").notEmpty().withMessage("Password is required"),
 ];
+
+export const updateAvatarValidator = [
+  body("avatar")
+    .notEmpty()
+    .isString()
+    .withMessage("Avatar must be a string")
+    .isURL({ require_protocol: true })
+    .withMessage("Avatar must be a valid URL"),
+];

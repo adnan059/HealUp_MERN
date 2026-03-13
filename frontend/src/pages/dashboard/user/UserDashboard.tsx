@@ -1,5 +1,6 @@
 import DoctorAppointmentsTable from "@/components/sections/userDashboardSections/DoctorAppointmentsTable";
 import PatientAppointmentsTable from "@/components/sections/userDashboardSections/PatientAppointmentsTable ";
+import AvatarUploader from "@/components/shared/AvatarUploader";
 import Loader from "@/components/shared/Loader";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,15 +23,11 @@ const UserDashboard = () => {
     <section className="userDashboard">
       <div className="sectionContainer">
         <div className="personDashboardDetails">
-          <div className="personImage">
-            <img
-              src={
-                user?.avatar ||
-                "https://static.vecteezy.com/system/resources/previews/015/412/022/non_2x/doctor-round-avatar-medicine-flat-avatar-with-male-doctor-medical-clinic-team-round-icon-medical-collection-illustration-vector.jpg"
-              }
-              alt={user?.name}
-            />
-          </div>
+          <AvatarUploader
+            currentAvatar={user?.avatar || ""}
+            userName={user?.name || ""}
+          />
+
           <div className="personTextInfo">
             <h2 className="personFullName">{user?.name}</h2>
             <p className="personRoles">

@@ -191,3 +191,8 @@ export interface IDoctorAppointment {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AvatarUploaderProps {
+  currentAvatar: string;
+  userName: string;
+}

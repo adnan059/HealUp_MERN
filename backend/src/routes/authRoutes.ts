@@ -4,10 +4,12 @@ import {
   loginCtrl,
   logoutCtrl,
   registerCtrl,
+  updateAvatarCtrl,
 } from "../controllers/authCtrl";
 import {
   loginValidator,
   registerValidator,
+  updateAvatarValidator,
 } from "../lib/validators/authValidator";
 import { validateRequest } from "../middlewares/validateRequest";
 import { verifyToken } from "../middlewares/authMiddleware";
@@ -25,5 +27,14 @@ router.post("/logout", verifyToken, logoutCtrl);
 
 // get current user
 router.get("/getCurrentUser", verifyToken, getCurrentUserCtrl);
+
+// update avatar
+router.put(
+  "/update-avatar",
+  verifyToken,
+  updateAvatarValidator,
+  validateRequest,
+  updateAvatarCtrl,
+);
 
 export default router;

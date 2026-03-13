@@ -4,6 +4,10 @@ import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { workingDaysList } from ".";
 
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -99,4 +103,24 @@ export const isAppointmentPast = (
   if (date < todayStr) return true;
   if (date === todayStr && startMinute <= nowMinute) return true;
   return false;
+};
+
+export const uploadToCloudinary = async (file: File): Promise<string> => {
+  console.log("UP", UPLOAD_PRESET);
+  console.log("CN", CLOUD_NAME);
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+  formData.append("folder", "healup/avatars");
+
+  try {
+    const { data } = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      formData,
+    );
+    return data.secure_url as string;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Cloudinary upload failed");
+  }
 };

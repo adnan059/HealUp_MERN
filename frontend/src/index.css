@@ -175,7 +175,7 @@
   }
 
   button {
-    @apply bg-transparent border-0;
+    @apply bg-transparent border-0 cursor-pointer;
   }
 
   :focus-visible {

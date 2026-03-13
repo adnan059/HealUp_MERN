@@ -108,3 +108,32 @@ export const getCurrentUserCtrl = async (
     next(error);
   }
 };
+
+// update avatar controller
+export const updateAvatarCtrl = async (
+  req: AuthenticatedRequest<{ avatar: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { avatar } = req.body;
+
+    if (!avatar) {
+      return next(createError(400, "Avatar URL is required"));
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user?._id,
+      { avatar },
+      { new: true, select: "-password" },
+    );
+
+    if (!updatedUser) {
+      return next(createError(404, "User not found"));
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+};

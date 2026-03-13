@@ -1,4 +1,5 @@
 import AdminDashboardTable from "@/components/sections/adminDashboardSections/AdminDashboardTable";
+import AvatarUploader from "@/components/shared/AvatarUploader";
 import { useAuth } from "@/provider/auth-context";
 
 const AdminDashboard = () => {
@@ -9,12 +10,9 @@ const AdminDashboard = () => {
       <div className="sectionContainer">
         <div className="personDashboardDetails">
           <div className="personImage">
-            <img
-              src={
-                user?.avatar ||
-                "https://static.vecteezy.com/system/resources/previews/015/412/022/non_2x/doctor-round-avatar-medicine-flat-avatar-with-male-doctor-medical-clinic-team-round-icon-medical-collection-illustration-vector.jpg"
-              }
-              alt={user?.name}
+            <AvatarUploader
+              currentAvatar={user?.avatar || ""}
+              userName={user?.name || ""}
             />
           </div>
           <div className="personTextInfo">
