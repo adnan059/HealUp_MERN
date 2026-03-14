@@ -11,12 +11,24 @@ dotenv.config();
 
 // env validation
 const validateEnv = () => {
-  const requiredVars = ["DB_URL", "FRONTEND_URL", "JWT_SK", "NODE_ENV"];
+  const requiredVars = [
+    "PORT",
+    "DB_URL",
+    "JWT_SK",
+    "NODE_ENV",
+    "SP_ENDPOINT",
+    "SP_USERNAME",
+    "SP_PASSWORD",
+    "SP_PREFIX",
+    "PAYMENT_WINDOW_MINUTES",
+    "FRONTEND_URL",
+    "BACKEND_URL",
+  ];
   const missingVars = requiredVars.filter((key) => !process.env[key]);
   if (missingVars.length > 0) {
     console.error("Missing environment variables:");
     missingVars.forEach((key) => console.error(` - ${key}`));
-    // Don't process.exit in serverless — just warn
+
     if (process.env.NODE_ENV !== "production") {
       process.exit(1);
     }
@@ -29,8 +41,7 @@ const DB_URL = process.env.DB_URL as string;
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
 
-// ✅ Mongoose connection caching — critical for serverless
-// Without this, every request creates a new DB connection (connection pool exhaustion)
+// db setup
 let isConnected = false;
 
 const connectDB = async () => {
@@ -59,7 +70,6 @@ app.use(
   }),
 );
 
-// ✅ Middleware to connect DB before every request (serverless safe)
 app.use(async (req: Request, res: Response, next: NextFunction) => {
   try {
     await connectDB();
@@ -91,7 +101,6 @@ app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// ✅ Local development only
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     mongoose
@@ -108,5 +117,4 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// ✅ Required export for Vercel serverless
 export default app;
