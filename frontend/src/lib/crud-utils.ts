@@ -15,7 +15,8 @@ api.interceptors.response.use(
   (error) => {
     const isAuthRoute =
       error.config?.url?.includes("/auth/login") ||
-      error.config?.url?.includes("/auth/logout");
+      error.config?.url?.includes("/auth/logout") ||
+      error.config?.url?.includes("/auth/getCurrentUser");
     if (error.response?.status === 401 && !isAuthRoute) {
       dispatchEvent(new Event("force-logout"));
     }
