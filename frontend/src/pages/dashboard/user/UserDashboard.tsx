@@ -15,7 +15,12 @@ const UserDashboard = () => {
   const isDoctor = user?.roles.includes("doctor");
   const isBoth = isPatient && isDoctor;
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <div className="min-h-screen">
+        <Loader />
+      </div>
+    );
 
   return (
     <section className="userDashboard">

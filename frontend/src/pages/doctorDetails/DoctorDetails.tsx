@@ -14,7 +14,11 @@ const DoctorDetails = () => {
   const { data, isPending } = useGetADoctorById(id);
 
   if (isPending) {
-    return <Loader />;
+    return (
+      <div className="min-h-screen">
+        <Loader />
+      </div>
+    );
   }
 
   return (

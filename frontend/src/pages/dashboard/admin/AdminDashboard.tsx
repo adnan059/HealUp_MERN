@@ -1,9 +1,18 @@
 import AdminDashboardTable from "@/components/sections/adminDashboardSections/AdminDashboardTable";
 import AvatarUploader from "@/components/shared/AvatarUploader";
+import Loader from "@/components/shared/Loader";
 import { useAuth } from "@/provider/auth-context";
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <section>
