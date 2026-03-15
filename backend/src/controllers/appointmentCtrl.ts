@@ -57,6 +57,21 @@ export const getNextWorkingDays = async (
   }
 };
 
+// updating unpaid expired appointments
+const expireStaleAppointments = async (doctorId: string, date: string) => {
+  const now = getDhakaDateNow();
+  await Appointment.updateMany(
+    {
+      doctorId,
+      date,
+      status: "pending",
+      paymentStatus: "unpaid",
+      paymentExpiresAt: { $lt: now },
+    },
+    { $set: { status: "cancelled", paymentStatus: "expired" } },
+  );
+};
+
 // getting available slots for a specified doctor on a date
 export const getAvailableSlots = async (
   req: Request,
@@ -70,6 +85,9 @@ export const getAvailableSlots = async (
     if (!doctorId || !date) {
       return next(createError(400, "doctorId and date are required"));
     }
+
+    await expireStaleAppointments(doctorId, date);
+
     const schedule = await DoctorSchedule.findOne({ doctorId }).lean();
 
     if (!schedule) {
@@ -258,10 +276,6 @@ export const getMyAppointmentsAsDoctor = async (
       })
       .sort({ date: -1, startMinute: -1 })
       .lean();
-
-    const doctorScheduleDetails = await DoctorSchedule.findOne({
-      doctorId: doctorProfile._id,
-    });
 
     res.status(200).json(appointments);
   } catch (error) {

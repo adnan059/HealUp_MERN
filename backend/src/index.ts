@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import routes from "./routes";
 import { AppError } from "./lib/types";
-import { startCleanupWorker } from "./workers/cleanupWorker";
 
 dotenv.config();
 
@@ -51,7 +50,6 @@ const connectDB = async () => {
     await mongoose.connect(DB_URL);
     isConnected = true;
     console.log("Database connected successfully");
-    startCleanupWorker();
   } catch (error) {
     console.error("DB connection failed:", error);
     throw error;
@@ -107,7 +105,7 @@ if (process.env.NODE_ENV !== "production") {
       .connect(DB_URL)
       .then(() => {
         console.log("Database connected successfully");
-        startCleanupWorker();
+
         console.log(`Server running at http://localhost:${PORT}`);
       })
       .catch((err) => {
