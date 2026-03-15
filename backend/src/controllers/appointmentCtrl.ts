@@ -232,6 +232,16 @@ export const getMyAppointmentsAsPatient = async (
 ) => {
   try {
     const patientId = req.user?._id;
+    const now = getDhakaDateNow();
+    await Appointment.updateMany(
+      {
+        patientId,
+        status: "pending",
+        paymentStatus: "unpaid",
+        paymentExpiresAt: { $lt: now },
+      },
+      { $set: { status: "cancelled", paymentStatus: "expired" } },
+    );
 
     const appointments = await Appointment.find({ patientId })
       .populate({
